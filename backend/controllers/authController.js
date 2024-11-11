@@ -46,7 +46,7 @@ const signUp = [
 
         delete user.password;
 
-        jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+        jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) {
                 throw new CustomError(err.message, 409);
             }
@@ -67,6 +67,16 @@ const login = [
                 errors: errors.array(),
                 message: 'Validation Error',
             })
+        }
+        const { email, password } = req.body;
+        const checkEmail = await prisma.user.findUnique({ where: { email } })
+        if (!checkEmail) {
+            throw new CustomError(`Email does not exist`, 401);
+        }
+
+        const match = await bcrypt.compare(password, checkEmail.password);
+        if (!match) {
+            throw new CustomError(`Password is incorrect`, 401);
         }
         next()
     }),

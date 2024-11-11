@@ -9,11 +9,12 @@ const opts = {
     secretOrKey: process.env.JWT_SECRET,
 }
 
-passport.use(new JwtStrategy(opts, async ({ user }, done) => {
+passport.use(new JwtStrategy(opts, async (jwtPayload, done) => {
     try {
+        console.log(jwtPayload);
         const checkUser = await prisma.user.findUnique({
             where: {
-                email: user.email,
+                email: jwtPayload.email,
             }
         });
 
@@ -21,7 +22,7 @@ passport.use(new JwtStrategy(opts, async ({ user }, done) => {
             return done(null, false)
         }
 
-        done(null, user)
+        done(null, jwtPayload)
     } catch (error) {
         done(error, false)
     }
