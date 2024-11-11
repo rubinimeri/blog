@@ -1,5 +1,4 @@
 import prisma from "../prisma/prismaClient.js";
-import passport from "../strategies/jwtStrategy.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import CustomError from "../utils/customError.js";
@@ -69,21 +68,28 @@ const login = [
             })
         }
         const { email, password } = req.body;
-        const checkEmail = await prisma.user.findUnique({ where: { email } })
-        if (!checkEmail) {
+        const user = await prisma.user.findUnique({ where: { email } })
+        if (!user) {
             throw new CustomError(`Email does not exist`, 401);
         }
 
-        const match = await bcrypt.compare(password, checkEmail.password);
+        const match = await bcrypt.compare(password, user.password);
         if (!match) {
             throw new CustomError(`Password is incorrect`, 401);
         }
-        next()
-    }),
-    jwtAuthenticate,
-    (req, res) => {
-        return res.status(200).json({ user: req.user });
-    }
+
+        delete user.password
+
+        jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+            if (err) {
+                throw new CustomError(err.message, 409);
+            }
+            return res.status(200).json({
+                token,
+                message: 'Token created successfully!'
+            })
+        })
+    })
 ]
 
 export default {
