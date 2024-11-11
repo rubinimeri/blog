@@ -10,6 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/posts', routes.posts);
 app.use('/posts', routes.messages);
 app.use('/users', routes.users);
+app.use('/auth', routes.auth);
 
 app.all('*', (req, res, next) => {
     const err = new CustomError(`Can't find ${req.originalUrl} on the server!`, 404)
