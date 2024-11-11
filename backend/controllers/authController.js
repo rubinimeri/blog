@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import {validateLogin, validateSignUp} from "../middleware/validateFields.js"
 import { config } from 'dotenv';
-import { jwtAuthenticate } from "../middleware/jwtAuthenticate.js";
 config();
 
 const signUp = [
