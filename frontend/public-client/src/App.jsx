@@ -1,9 +1,11 @@
-import { Button } from "./components/ui/button.jsx";
+import Header from "@/components/Header.jsx";
+import Hero from "@/components/Hero.jsx";
 
 function App() {
   return (
     <>
-      <Button>Button</Button>
+        <Header />
+        <Hero />
     </>
   );
 }
