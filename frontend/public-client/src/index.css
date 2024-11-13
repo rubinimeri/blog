@@ -100,3 +100,15 @@ h1 {
     @apply bg-background text-foreground;
   }
 }
+
+.link {
+  @apply text-blue-500 text-[15px] font-bold underline;
+}
+
+.author {
+  @apply text-gray-500 text-sm font-bold;
+}
+
+.content-hero {
+  @apply text-gray-500 text-xs font-bold tracking-tight;
+}
