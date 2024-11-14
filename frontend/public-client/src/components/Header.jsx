@@ -40,7 +40,7 @@ function MobileMenu() {
 
 const Header = () => {
   return (
-    <header className="max-w-[1200px] mx-auto max-sm:px-4 px-[70px] py-5 flex items-center justify-between">
+    <header className="max-w-[1200px] mx-auto max-sm:px-4 px-[70px] py-5 border-b-2 flex items-center justify-between">
       <div>
         <img
           src="/logo/logo-light.png"

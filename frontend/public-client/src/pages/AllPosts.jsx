@@ -4,6 +4,16 @@ import PostList from "@/components/PostList.jsx";
 import posts from "@/utils/exampleData.js";
 
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -11,10 +21,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input.jsx";
+import { Button } from "@/components/ui/button.jsx";
+
+function Pages() {
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious href="#" />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">1</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationEllipsis />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext href="#" />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+}
 
 function Sort() {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 my-auto">
       <Select>
         <SelectTrigger className="w-[150px] max-md:w-[100px]">
           <SelectValue placeholder="Sort By" />
@@ -42,13 +74,19 @@ function AllPosts() {
   return (
     <>
       <Header />
-      <main className="p-6 max-w-[1200px] mx-auto">
-        <div className="flex justify-between items-center">
-          <h1 className="font-serif font-bold">All Posts</h1>
-          <Input type="search" placeholder="Search" className="max-w-xs" />
-          <Sort />
+      <main className="min-h-screen p-6 max-w-[1200px] mx-auto">
+        <div className="flex flex-wrap justify-between items-center py-6 gap-6">
+          <h1 className="text-3xl font-serif font-bold">All Posts</h1>
+          <div className="flex items-center gap-2">
+            <Sort />
+            <Input type="search" placeholder="Search" className="max-w-xs" />
+            <Button size="sm" className="bg-blue-500 hover:bg-blue-900">
+              Search
+            </Button>
+          </div>
         </div>
         <PostList posts={posts} />
+        <Pages />
       </main>
       <Footer />
     </>
