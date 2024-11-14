@@ -1,11 +1,9 @@
-import Header from "@/components/Header.jsx";
-import Hero from "@/components/Hero.jsx";
+import Home from "@/pages/Home/Home.jsx";
 
 function App() {
   return (
     <>
-        <Header />
-        <Hero />
+      <Home />
     </>
   );
 }
