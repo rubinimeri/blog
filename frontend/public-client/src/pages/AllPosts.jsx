@@ -85,8 +85,10 @@ function AllPosts() {
             </Button>
           </div>
         </div>
-        <PostList posts={posts} />
-        <Pages />
+        <div className="flex flex-col justify-between min-h-screen">
+          <PostList posts={posts} />
+          <Pages />
+        </div>
       </main>
       <Footer />
     </>
