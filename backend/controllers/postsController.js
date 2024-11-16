@@ -3,13 +3,30 @@ import asyncHandler from 'express-async-handler'
 import CustomError from "../utils/customError.js";
 
 const postsGet =  asyncHandler(async (req, res) => {
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+        include: {
+            author: {
+                select: {
+                    username: true,
+                }
+            }
+        }
+    });
     return res.status(200).json(posts);
 })
 
 const postGet =  asyncHandler(async (req, res) => {
     const { postId } = req.params;
-    const post = await prisma.post.findUnique({ where: { id: postId } });
+    const post = await prisma.post.findUnique({
+        where: { id: postId },
+        include: {
+            author: {
+                select: {
+                    username: true,
+                }
+            }
+        }
+    });
 
     if (!post) {
         throw new CustomError(`Post with ID ${postId} not found`, 404);
