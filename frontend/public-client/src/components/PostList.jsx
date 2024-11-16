@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import convertTimestamp from "@/utils/convertTimestamp.js";
 
-function PostCard({ author, imageUrl, title, content, createdAt }) {
+function PostCard({ id, author, imageUrl, title, content, createdAt }) {
   return (
     <div className="flex flex-col justify-between gap-3 py-4 tracking-wider text-left">
       <img src={imageUrl} alt="post image" />
@@ -10,9 +11,7 @@ function PostCard({ author, imageUrl, title, content, createdAt }) {
       </p>
       <h3 className="font-black font-serif text-2xl">{title}</h3>
       <p className="content-hero line-clamp-4">{content}</p>
-      <a className="link" href="#">
-        Read more
-      </a>
+      <Link to={`post/${id}`}>Read more</Link>
     </div>
   );
 }
@@ -24,6 +23,7 @@ function PostList({ posts }) {
         posts.map((post) => (
           <PostCard
             key={post.id}
+            id={post.id}
             author={post.author.username}
             title={post.title}
             imageUrl={post.imageUrl}

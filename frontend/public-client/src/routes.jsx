@@ -12,7 +12,7 @@ const routes = [
     element: <AllPosts />,
   },
   {
-    path: "/post",
+    path: "/post/:postId",
     element: <PostPage />,
   },
 ];
