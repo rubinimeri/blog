@@ -1,7 +1,6 @@
 import Header from "@/components/Header.jsx";
 import Footer from "@/components/Footer.jsx";
 import PostList from "@/components/PostList.jsx";
-import posts from "@/utils/exampleData.js";
 
 import {
   Pagination,
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input.jsx";
 import { Button } from "@/components/ui/button.jsx";
+import usePosts from "@/hooks/usePosts.js";
 
 function Pages() {
   return (
@@ -71,6 +71,12 @@ function Sort() {
 }
 
 function AllPosts() {
+  const { error, loading, posts } = usePosts();
+
+  if (loading) return <div>Loading...</div>;
+
+  if (error) return <div>Error!</div>;
+
   return (
     <>
       <Header />
