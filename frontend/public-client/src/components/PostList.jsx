@@ -25,6 +25,7 @@ function PostList({ posts }) {
           <PostCard
             key={post.id}
             author={post.author.username}
+            title={post.title}
             imageUrl={post.imageUrl}
             content={post.content}
             createdAt={post.createdAt}
