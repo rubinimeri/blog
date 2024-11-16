@@ -1,6 +1,6 @@
 function timeAgo(timestamp) {
   const now = Date.now();
-  const diff = now - timestamp; // Difference in milliseconds
+  const diff = now - new Date(timestamp); // Difference in milliseconds
 
   const seconds = Math.floor(diff / 1000);
   const minutes = Math.floor(seconds / 60);
