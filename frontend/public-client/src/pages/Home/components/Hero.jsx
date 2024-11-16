@@ -1,11 +1,11 @@
 import exampleData from "@/utils/exampleData.js";
 import PostList from "@/components/PostList.jsx";
 
-function Hero() {
+export default function Hero() {
   const posts = [...exampleData];
   return (
     <main className="max-sm:mx-0 text-center max-w-[1200px] mx-auto">
-      <section className="flex flex-col gap-3 sm:p-10 md:rounded-[30px] md:mx-[25px] max-sm:p-6 bg-gray-100 tracking-wider">
+      <section className="flex flex-col gap-3 sm:p-10 md:rounded-[30px] md:mx-[25px] mt-[15px] max-sm:p-6 bg-gray-100 tracking-wider">
         <h2 className="font-bold text-gray-500 text-[15px] lg:text">
           WELCOME TO GROWTH GRID
         </h2>
@@ -64,5 +64,3 @@ function LatestPosts({ children }) {
     </section>
   );
 }
-
-export default Hero;
