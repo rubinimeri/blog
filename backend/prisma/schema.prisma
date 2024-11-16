@@ -19,6 +19,7 @@ model Post {
   id          String    @id @default(uuid())
   title       String
   content     String
+  imageUrl    String
   isPublished Boolean
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -28,12 +29,13 @@ model Post {
 }
 
 model Message {
-  id       String    @id @default(uuid())
-  content  String
-  username String
-  post     Post?     @relation(fields: [postId], references: [id])
-  postId   String?
-  parent   Message?  @relation("MessageToMessage", fields: [parentId], references: [id]) // Self-referencing relation
-  parentId String?
-  replies  Message[] @relation("MessageToMessage")
+  id        String    @id @default(uuid())
+  content   String
+  username  String
+  avatarUrl String
+  post      Post?     @relation(fields: [postId], references: [id])
+  postId    String?
+  parent    Message?  @relation("MessageToMessage", fields: [parentId], references: [id]) // Self-referencing relation
+  parentId  String?
+  replies   Message[] @relation("MessageToMessage")
 }
