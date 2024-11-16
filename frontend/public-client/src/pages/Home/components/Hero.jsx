@@ -1,8 +1,16 @@
-import exampleData from "@/utils/exampleData.js";
 import PostList from "@/components/PostList.jsx";
+import usePosts from "@/hooks/usePosts.js";
 
 export default function Hero() {
-  const posts = [...exampleData];
+  /*const posts = [...exampleData];*/
+  const { loading, error, posts } = usePosts();
+
+  console.log(posts);
+
+  if (loading) return <div>Loading...</div>;
+
+  if (error) return <div>Error!</div>;
+
   return (
     <main className="max-sm:mx-0 text-center max-w-[1200px] mx-auto">
       <section className="flex flex-col gap-3 sm:p-10 md:rounded-[30px] md:mx-[25px] mt-[15px] max-sm:p-6 bg-gray-100 tracking-wider">
