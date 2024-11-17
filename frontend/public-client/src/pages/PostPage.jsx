@@ -30,6 +30,7 @@ import { useState } from "react";
 import usePost from "@/hooks/usePost.js";
 import { useParams } from "react-router-dom";
 import convertTimestamp from "@/utils/convertTimestamp.js";
+import useComments from "@/hooks/useComments.js";
 
 function Sort() {
   return (
@@ -46,7 +47,7 @@ function Sort() {
   );
 }
 
-export function AddComment() {
+function AddComment() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -78,8 +79,8 @@ export function AddComment() {
   );
 }
 
-export function Comment({ name, comment, createdAt }) {
-  const [likeCount, setLikeCount] = useState(12);
+function Comment({ username, content, createdAt, likes }) {
+  const [likeCount, setLikeCount] = useState(likes);
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLike = () => {
@@ -99,14 +100,11 @@ export function Comment({ name, comment, createdAt }) {
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <h3 className="font-[500]">Rubin Imeri</h3>
-        <p className="text-sm text-gray-500">8 minutes ago</p>
+        <h3 className="font-[500]">{username}</h3>
+        <p className="text-sm text-gray-500">{convertTimestamp(createdAt)}</p>
       </div>
       <div className="ml-11 flex flex-col gap-3">
-        <p>
-          Hope you guys like this post! For a beginner like me I think it's
-          decent
-        </p>
+        <p>{content}</p>
         <div className="flex items-center gap-1">
           {isLiked ? (
             <img
@@ -130,6 +128,22 @@ export function Comment({ name, comment, createdAt }) {
       </div>
     </div>
   );
+}
+
+function CommentList() {
+  const { postId } = useParams();
+  const { loading, error, comments } = useComments(postId);
+  const commentList = comments.map((comment) => (
+    <Comment key={comment.id} {...comment} />
+  ));
+
+  console.log(comments);
+
+  if (loading) return <div>Loading...</div>;
+
+  if (error) return <div>Error: {error.message}</div>;
+
+  return commentList;
 }
 
 function PostPage() {
@@ -179,10 +193,7 @@ function PostPage() {
             <AddComment />
           </div>
         </div>
-        <Comment />
-        <Comment />
-        <Comment />
-        <Comment />
+        <CommentList />
       </section>
       <Footer />
     </>
