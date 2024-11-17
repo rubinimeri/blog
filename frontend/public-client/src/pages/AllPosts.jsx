@@ -5,7 +5,6 @@ import PostList from "@/components/PostList.jsx";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -25,21 +24,40 @@ import usePosts from "@/hooks/usePosts.js";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-function Pages() {
+function Pages({ metadata }) {
+  const { currentPage, totalPages } = metadata;
+
+  const nextPageUrl =
+    currentPage + 1 <= totalPages
+      ? `/all-posts/${currentPage + 1}`
+      : `/all-posts/${currentPage}#`;
+
+  const prevPageUrl =
+    currentPage - 1 > 0
+      ? `/all-posts/${currentPage - 1}`
+      : `/all-posts/${currentPage}#`;
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href="#" />
+          <PaginationPrevious to={prevPageUrl} />
         </PaginationItem>
+        {Array.apply(null, Array(totalPages)).map((val, index) => (
+          <PaginationItem key={index}>
+            {currentPage === index + 1 ? (
+              <PaginationLink to={`/all-posts/${index + 1}`} isActive>
+                {index + 1}
+              </PaginationLink>
+            ) : (
+              <PaginationLink to={`/all-posts/${index + 1}`}>
+                {index + 1}
+              </PaginationLink>
+            )}
+          </PaginationItem>
+        ))}
         <PaginationItem>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
+          <PaginationNext to={nextPageUrl} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
@@ -54,9 +72,9 @@ function Sort({ setSortValue, setOrder }) {
           <SelectValue placeholder="Sort By" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="name">Name</SelectItem>
-          <SelectItem value="dateAdded">Date Added</SelectItem>
-          <SelectItem value="comments">Comments</SelectItem>
+          <SelectItem value="title">Name</SelectItem>
+          <SelectItem value="createdAt">Date Added</SelectItem>
+          <SelectItem value="messages">Comments</SelectItem>
         </SelectContent>
       </Select>
       <Select onValueChange={(value) => setOrder(value)}>
@@ -64,8 +82,8 @@ function Sort({ setSortValue, setOrder }) {
           <SelectValue placeholder="Order" />
         </SelectTrigger>
         <SelectContent className="max-md:text-left">
-          <SelectItem value="ascending">Ascending</SelectItem>
-          <SelectItem value="descending">Descending</SelectItem>
+          <SelectItem value="asc">Ascending</SelectItem>
+          <SelectItem value="desc">Descending</SelectItem>
         </SelectContent>
       </Select>
     </div>
@@ -74,10 +92,10 @@ function Sort({ setSortValue, setOrder }) {
 
 function AllPosts() {
   const { pageNumber } = useParams();
-  const [sortValue, setSortValue] = useState("");
-  const [order, setOrder] = useState("");
+  const [sortValue, setSortValue] = useState("createdAt");
+  const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState("");
-  const { error, loading, posts } = usePosts(
+  const { error, loading, posts, metadata } = usePosts(
     pageNumber,
     sortValue,
     order,
@@ -96,20 +114,25 @@ function AllPosts() {
           <h1 className="text-3xl font-serif font-bold">All Posts</h1>
           <div className="flex items-center gap-2">
             <Sort setSortValue={setSortValue} setOrder={setOrder} />
-            <Input
-              onChange={(e) => setSearch(e.target.value)}
-              type="search"
-              placeholder="Search"
-              className="max-w-xs"
-            />
-            <Button size="sm" className="bg-blue-500 hover:bg-blue-900">
-              Search
-            </Button>
+            <form className="flex items-center gap-2">
+              <Input type="search" placeholder="Search" className="max-w-xs" />
+              <Button
+                type="submit"
+                size="sm"
+                className="bg-blue-500 hover:bg-blue-900"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSearch(e.target.previousSibling.value);
+                }}
+              >
+                Search
+              </Button>
+            </form>
           </div>
         </div>
         <div className="flex flex-col justify-between min-h-screen">
           <PostList posts={posts} />
-          <Pages />
+          <Pages metadata={metadata} />
         </div>
       </main>
       <Footer />

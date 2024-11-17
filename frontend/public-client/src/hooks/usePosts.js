@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 
-const usePosts = (pageNumber, sortValue, order, search) => {
+const usePosts = (
+  pageNumber = 1,
+  sortValue = "createdAt",
+  order = "asc",
+  search = "",
+) => {
   const [posts, setPosts] = useState(null);
+  const [metadata, setMetadata] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,12 +23,16 @@ const usePosts = (pageNumber, sortValue, order, search) => {
       method: "GET",
     })
       .then((res) => res.json())
-      .then((data) => setPosts(data))
+      .then((data) => {
+        const { posts, metadata } = data;
+        setPosts(posts);
+        setMetadata(metadata);
+      })
       .catch((error) => setError(error))
       .finally(() => setLoading(false));
   }, [queries]);
 
-  return { loading, error, posts };
+  return { loading, error, posts, metadata };
 };
 
 export default usePosts;
