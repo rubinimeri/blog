@@ -9,8 +9,8 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/posts', routes.posts);
 app.use('/posts', routes.messages);
+app.use('/posts', routes.posts);
 app.use('/users', routes.users);
 app.use('/auth', routes.auth);
 

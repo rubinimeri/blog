@@ -12,14 +12,18 @@ const messagesGet = asyncHandler(async (req, res) => {
 
 const messageCreatePost =  asyncHandler(async (req, res) => {
     const { postId } = req.params;
-    const { username, content } = req.body;
+    const { username, content, avatarUrl } = req.body;
     if (!username || !content) {
         throw new CustomError("Username and content are required", 400);
+    }
+    if (!avatarUrl) {
+        throw new CustomError("Avatar URL is required", 400);
     }
     const message = await prisma.message.create({
         data: {
             username,
             content,
+            avatarUrl,
             postId
         }
     })

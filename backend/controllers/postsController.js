@@ -3,16 +3,69 @@ import asyncHandler from 'express-async-handler'
 import CustomError from "../utils/customError.js";
 
 const postsGet =  asyncHandler(async (req, res) => {
+    const {
+        page = 1,
+        sort = 'createdAt',
+        order = 'desc',
+        search = ''
+    } = req.query;
+
+    const validSortFields = ['createdAt', 'title', 'messages'];
+    const validOrderValues = ['asc', 'desc'];
+
+    if (!validSortFields.includes(sort)) {
+        throw new CustomError(`Invalid sort field: ${sort}`, 400);
+    }
+
+    if (!validOrderValues.includes(order)) {
+        throw new CustomError(`Invalid order value: ${order}`, 400);
+    }
+
+    const pageSize = 6;
+    const currentPage = Math.max(1, Number(page));
+    const skip = (currentPage - 1) * pageSize;
+
+    let orderBy;
+    if (sort === 'messages') {
+        orderBy = { [sort]: { _count: order } };
+    } else {
+        orderBy = { [sort]: order };
+    }
+
+    const totalPosts = await prisma.post.count({
+        where: {
+            isPublished: true
+        }
+    })
+
     const posts = await prisma.post.findMany({
+        where: {
+            isPublished: true,
+            title: {
+                contains: search,
+                mode: 'insensitive'
+            }
+
+        },
+        orderBy,
+        skip,
+        take: pageSize,
         include: {
             author: {
                 select: {
                     username: true,
                 }
-            }
+            },
         }
     });
-    return res.status(200).json(posts);
+    return res.status(200).json({
+        metadata: {
+            totalPosts,
+            currentPage,
+            totalPages: Math.ceil(totalPosts / pageSize),
+        },
+        posts
+    });
 })
 
 const postGet =  asyncHandler(async (req, res) => {

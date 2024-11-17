@@ -8,8 +8,6 @@ messagesRouter.get('/:postId/messages', messagesController.messagesGet);
 messagesRouter.post('/:postId/messages', messagesController.messageCreatePost);
 
 // Protect DELETE route for messages
-messagesRouter.use(jwtAuthenticate);
-
-messagesRouter.delete('/:postId/messages/:messageId', messagesController.messageDelete);
+messagesRouter.delete('/:postId/messages/:messageId', jwtAuthenticate, messagesController.messageDelete);
 
 export default messagesRouter;
