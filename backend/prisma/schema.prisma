@@ -33,6 +33,7 @@ model Message {
   content   String
   username  String
   avatarUrl String
+  likes     Int       @default(0)
   post      Post?     @relation(fields: [postId], references: [id])
   postId    String?
   parent    Message?  @relation("MessageToMessage", fields: [parentId], references: [id]) // Self-referencing relation
