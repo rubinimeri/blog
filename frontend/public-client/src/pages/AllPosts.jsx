@@ -22,6 +22,8 @@ import {
 import { Input } from "@/components/ui/input.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import usePosts from "@/hooks/usePosts.js";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 function Pages() {
   return (
@@ -44,10 +46,10 @@ function Pages() {
   );
 }
 
-function Sort() {
+function Sort({ setSortValue, setOrder }) {
   return (
     <div className="flex items-center gap-2 my-auto">
-      <Select>
+      <Select onValueChange={(value) => setSortValue(value)}>
         <SelectTrigger className="w-[150px] max-md:w-[100px]">
           <SelectValue placeholder="Sort By" />
         </SelectTrigger>
@@ -57,7 +59,7 @@ function Sort() {
           <SelectItem value="comments">Comments</SelectItem>
         </SelectContent>
       </Select>
-      <Select>
+      <Select onValueChange={(value) => setOrder(value)}>
         <SelectTrigger className="w-[150px] max-md:w-[100px]">
           <SelectValue placeholder="Order" />
         </SelectTrigger>
@@ -71,7 +73,16 @@ function Sort() {
 }
 
 function AllPosts() {
-  const { error, loading, posts } = usePosts();
+  const { pageNumber } = useParams();
+  const [sortValue, setSortValue] = useState("");
+  const [order, setOrder] = useState("");
+  const [search, setSearch] = useState("");
+  const { error, loading, posts } = usePosts(
+    pageNumber,
+    sortValue,
+    order,
+    search,
+  );
 
   if (loading) return <div>Loading...</div>;
 
@@ -84,8 +95,13 @@ function AllPosts() {
         <div className="flex flex-wrap justify-between items-center py-6 gap-6">
           <h1 className="text-3xl font-serif font-bold">All Posts</h1>
           <div className="flex items-center gap-2">
-            <Sort />
-            <Input type="search" placeholder="Search" className="max-w-xs" />
+            <Sort setSortValue={setSortValue} setOrder={setOrder} />
+            <Input
+              onChange={(e) => setSearch(e.target.value)}
+              type="search"
+              placeholder="Search"
+              className="max-w-xs"
+            />
             <Button size="sm" className="bg-blue-500 hover:bg-blue-900">
               Search
             </Button>

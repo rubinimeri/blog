@@ -11,7 +11,9 @@ function PostCard({ id, author, imageUrl, title, content, createdAt }) {
       </p>
       <h3 className="font-black font-serif text-2xl">{title}</h3>
       <p className="content-hero line-clamp-4">{content}</p>
-      <Link to={`post/${id}`}>Read more</Link>
+      <Link to={`/post/${id}`} className="link">
+        Read more
+      </Link>
     </div>
   );
 }

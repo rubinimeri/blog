@@ -12,7 +12,7 @@ const usePost = (postId) => {
       .then((res) => res.json())
       .then((data) => setPost(data))
       .catch((error) => setError(error))
-      .finally(setLoading(false));
+      .finally(() => setLoading(false));
   }, [postId]);
 
   return { loading, error, post };

@@ -140,15 +140,13 @@ function PostPage() {
 
   if (error) return <div>Error!</div>;
 
-  const { username } = post.author;
-
   return (
     <>
       <Header />
       <main className="mx-auto max-w-[768px] p-6 max-md:px-0 flex flex-col gap-6 md:text-left lg:py-[30px]">
         <div>
           <h2 className="author text-center tracking-wider">
-            {username} - {convertTimestamp(post.updatedAt)}
+            {post.author.username} - {convertTimestamp(post.updatedAt)}
           </h2>
           <h1 className="font-serif font-black text-center tracking-wider text-4xl max-sm:text-[34px] p-2">
             {post.title}

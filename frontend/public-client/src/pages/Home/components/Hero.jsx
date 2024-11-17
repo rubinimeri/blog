@@ -1,8 +1,8 @@
 import PostList from "@/components/PostList.jsx";
 import usePosts from "@/hooks/usePosts.js";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
-  /*const posts = [...exampleData];*/
   const { loading, error, posts } = usePosts();
 
   console.log(posts);
@@ -64,9 +64,9 @@ function LatestPosts({ children }) {
         <h2 className="font-bold sm:text-[28px] max-sm:text-2xl">
           Latest Posts
         </h2>
-        <a className="link" href="#">
+        <Link to="/all-posts/1" className="link">
           See All
-        </a>
+        </Link>
       </div>
       {children}
     </section>

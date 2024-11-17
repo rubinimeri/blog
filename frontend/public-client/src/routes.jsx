@@ -8,7 +8,7 @@ const routes = [
     element: <Home />,
   },
   {
-    path: "/all-posts",
+    path: "/all-posts/:pageNumber",
     element: <AllPosts />,
   },
   {
