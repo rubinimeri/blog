@@ -4,8 +4,29 @@ import CustomError from "../utils/customError.js";
 
 const messagesGet = asyncHandler(async (req, res) => {
     const { postId } = req.params;
+    const { sortValue } = req.query;
+
+    const validSortValues = ["asc", "desc", "likes"];
+
+    if (!validSortValues.includes(sortValue)) {
+        throw new CustomError(`Invalid sort value: ${sortValue}`, 400);
+    }
+
+    if (sortValue === "asc" || sortValue === "desc") {
+        const messages = await prisma.message.findMany({
+            where: { postId },
+            orderBy: {
+                createdAt: sortValue
+            }
+        })
+        return res.status(200).json(messages);
+    }
+
     const messages = await prisma.message.findMany({
-        where: { postId }
+        where: { postId },
+        orderBy: {
+            likes: "desc"
+        }
     })
     return res.status(200).json(messages);
 })
