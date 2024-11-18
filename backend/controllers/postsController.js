@@ -76,8 +76,9 @@ const postGet =  asyncHandler(async (req, res) => {
             author: {
                 select: {
                     username: true,
-                }
-            }
+                },
+            },
+            messages: true
         }
     });
 
