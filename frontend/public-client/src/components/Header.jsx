@@ -62,7 +62,7 @@ const Header = () => {
         <a href="#" className="text-blue-500">
           Admin
         </a>
-        <Link to="/all-posts" className="text-blue-500">
+        <Link to="/all-posts/1" className="text-blue-500">
           All Posts
         </Link>
         <a

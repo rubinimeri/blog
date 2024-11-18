@@ -20,7 +20,7 @@ function PostCard({ id, author, imageUrl, title, content, createdAt }) {
 
 function PostList({ posts }) {
   return (
-    <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] justify-center gap-3">
+    <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] justify-center gap-3">
       {posts &&
         posts.map((post) => (
           <PostCard
