@@ -15,7 +15,7 @@ const usePost = (postId) => {
       .finally(() => setLoading(false));
   }, [postId]);
 
-  return { loading, error, post };
+  return { loading, error, post, setPost };
 };
 
 export default usePost;

@@ -11,18 +11,31 @@ import { Button } from "@/components/ui/button.jsx";
 import { Label } from "@/components/ui/label.jsx";
 import { Input } from "@/components/ui/input.jsx";
 import { Textarea } from "@/components/ui/textarea.jsx";
+import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
-function AddComment() {
-  const [username, setUsername] = useState("");
-  const [comment, setComment] = useState("");
+function AddComment({ handleAddComment }) {
+  const [errorMessage, setErrorMessage] = useState("");
   const usernameRef = useRef(null);
   const commentRef = useRef(null);
   const closeRef = useRef(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setUsername(usernameRef.current.value);
-    setComment(commentRef.current.value);
+    setErrorMessage("");
+    const username = usernameRef.current.value;
+    const content = commentRef.current.value;
+
+    if (!username) {
+      return setErrorMessage("Name is required");
+    }
+
+    if (!content) {
+      return setErrorMessage("Comment is required");
+    }
+
+    await handleAddComment(username, content);
+
     closeRef.current.click();
   };
 
@@ -38,7 +51,7 @@ function AddComment() {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 gap-4">
             <Label htmlFor="name" className="text-right">
-              Name
+              Name *
             </Label>
             <Input
               ref={usernameRef}
@@ -50,7 +63,7 @@ function AddComment() {
           </div>
           <div className="grid grid-cols-4 gap-4">
             <Label htmlFor="comment" className="text-right">
-              Comment
+              Comment *
             </Label>
             <Textarea
               ref={commentRef}
@@ -58,6 +71,9 @@ function AddComment() {
               placeholder="..."
               required
             />
+            <p className="col-start-2 col-span-3 text-red-600 font-bold text-xs my-0">
+              {errorMessage}
+            </p>
           </div>
         </div>
         <DialogFooter>
@@ -69,5 +85,9 @@ function AddComment() {
     </Dialog>
   );
 }
+
+AddComment.propTypes = {
+  handleAddComment: PropTypes.func,
+};
 
 export default AddComment;

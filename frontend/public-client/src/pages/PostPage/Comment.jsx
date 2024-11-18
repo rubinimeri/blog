@@ -1,7 +1,5 @@
 import PropTypes from "prop-types";
 import convertTimestamp from "@/utils/convertTimestamp.js";
-import useComments from "@/hooks/useComments.js";
-import { useParams } from "react-router-dom";
 import { useState } from "react";
 import {
   Avatar,
@@ -60,22 +58,6 @@ function Comment({ username, content, createdAt, likes }) {
   );
 }
 
-function CommentList() {
-  const { postId } = useParams();
-  const { loading, error, comments } = useComments(postId);
-  const commentList = comments.map((comment) => (
-    <Comment key={comment.id} {...comment} />
-  ));
-
-  console.log(comments);
-
-  if (loading) return <div>Loading...</div>;
-
-  if (error) return <div>Error: {error.message}</div>;
-
-  return commentList;
-}
-
 Comment.propTypes = {
   username: PropTypes.string,
   content: PropTypes.string,
@@ -83,4 +65,4 @@ Comment.propTypes = {
   likes: PropTypes.number,
 };
 
-export default CommentList;
+export default Comment;

@@ -1,6 +1,6 @@
 import Header from "@/components/Header.jsx";
 import Footer from "@/components/Footer.jsx";
-import CommentList from "@/pages/PostPage/CommentList.jsx";
+import Comment from "@/pages/PostPage/Comment.jsx";
 import AddComment from "@/pages/PostPage/AddComment.jsx";
 import usePost from "@/hooks/usePost.js";
 import convertTimestamp from "@/utils/convertTimestamp.js";
@@ -31,7 +31,24 @@ function Sort() {
 
 function PostPage() {
   const { postId } = useParams();
-  const { error, loading, post } = usePost(postId);
+  const { error, loading, post, setPost } = usePost(postId);
+
+  function handleAddComment(username, content) {
+    console.log(username, content);
+    fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        content,
+        avatarUrl: "https://github.com/shadcn.png",
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => setPost({ ...post, messages: [...post.messages, data] }));
+  }
 
   if (loading) return <div>Loading...</div>;
 
@@ -73,10 +90,12 @@ function PostPage() {
           <h2 className="font-bold text-xl">Comments</h2>
           <div className="flex items-center gap-2">
             <Sort />
-            <AddComment />
+            <AddComment handleAddComment={handleAddComment} />
           </div>
         </div>
-        <CommentList />
+        {post.messages.map((comment) => (
+          <Comment key={comment.id} {...comment} />
+        ))}
       </section>
       <Footer />
     </>
