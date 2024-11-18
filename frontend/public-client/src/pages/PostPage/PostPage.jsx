@@ -4,6 +4,7 @@ import Comment from "@/pages/PostPage/Comment.jsx";
 import AddComment from "@/pages/PostPage/AddComment.jsx";
 import usePost from "@/hooks/usePost.js";
 import convertTimestamp from "@/utils/convertTimestamp.js";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -14,15 +15,15 @@ import {
   SelectValue,
 } from "@/components/ui/select.jsx";
 
-function Sort() {
+function Sort({ handleSortComments }) {
   return (
-    <Select>
+    <Select onValueChange={handleSortComments}>
       <SelectTrigger className="w-[150px] max-md:w-[100px]">
         <SelectValue placeholder="Sort By" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="oldest">Oldest</SelectItem>
-        <SelectItem value="newest">Newest</SelectItem>
+        <SelectItem value="asc">Oldest</SelectItem>
+        <SelectItem value="desc">Newest</SelectItem>
         <SelectItem value="likes">Likes</SelectItem>
       </SelectContent>
     </Select>
@@ -48,6 +49,42 @@ function PostPage() {
     })
       .then((res) => res.json())
       .then((data) => setPost({ ...post, messages: [...post.messages, data] }));
+  }
+
+  function handleLikeUnlikeComment(messageId, operation = "like") {
+    fetch(
+      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages/${operation}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messageId,
+        }),
+      },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        const commentIndex = post.messages.findIndex(
+          (message) => message.id === messageId,
+        );
+        const messagesDuplicate = [...post.messages];
+        messagesDuplicate[commentIndex] = data;
+        setPost({ ...post, messages: messagesDuplicate });
+      });
+  }
+
+  function handleSortComments(sortValue = "asc") {
+    const queryParams = new URLSearchParams({ sortValue }).toString();
+    fetch(
+      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages?${queryParams}`,
+      {
+        method: "GET",
+      },
+    )
+      .then((res) => res.json())
+      .then((data) => setPost({ ...post, messages: data }));
   }
 
   if (loading) return <div>Loading...</div>;
@@ -89,12 +126,16 @@ function PostPage() {
         <div className="flex justify-between items-center">
           <h2 className="font-bold text-xl">Comments</h2>
           <div className="flex items-center gap-2">
-            <Sort />
+            <Sort handleSortComments={handleSortComments} />
             <AddComment handleAddComment={handleAddComment} />
           </div>
         </div>
         {post.messages.map((comment) => (
-          <Comment key={comment.id} {...comment} />
+          <Comment
+            key={comment.id}
+            {...comment}
+            handleLikeUnlikeComment={handleLikeUnlikeComment}
+          />
         ))}
       </section>
       <Footer />

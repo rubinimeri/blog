@@ -7,16 +7,22 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar.jsx";
 
-function Comment({ username, content, createdAt, likes }) {
-  const [likeCount, setLikeCount] = useState(likes);
+function Comment({
+  id,
+  username,
+  content,
+  createdAt,
+  likes,
+  handleLikeUnlikeComment,
+}) {
   const [isLiked, setIsLiked] = useState(false);
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (isLiked) {
-      setLikeCount(likeCount - 1);
+      await handleLikeUnlikeComment(id, "unlike");
       setIsLiked(false);
     } else {
-      setLikeCount(likeCount + 1);
+      await handleLikeUnlikeComment(id);
       setIsLiked(true);
     }
   };
@@ -51,7 +57,7 @@ function Comment({ username, content, createdAt, likes }) {
               onClick={handleLike}
             />
           )}
-          <p className="text-xs">{likeCount}</p>
+          <p className="text-xs">{likes}</p>
         </div>
       </div>
     </div>
@@ -59,10 +65,12 @@ function Comment({ username, content, createdAt, likes }) {
 }
 
 Comment.propTypes = {
+  id: PropTypes.string,
   username: PropTypes.string,
   content: PropTypes.string,
   createdAt: PropTypes.string,
   likes: PropTypes.number,
+  handleLikeUnlikeComment: PropTypes.func,
 };
 
 export default Comment;
