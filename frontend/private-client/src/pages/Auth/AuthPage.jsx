@@ -1,19 +1,11 @@
 import SignUp from "@/pages/Auth/SignUp.jsx";
-import { Button } from "@/components/ui/button.jsx";
+import Login from "@/pages/Auth/Login.jsx";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs.jsx";
-
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.jsx";
 
 function AuthPage() {
   return (
@@ -24,15 +16,7 @@ function AuthPage() {
           <TabsTrigger value="signUp">Sign Up</TabsTrigger>
         </TabsList>
         <TabsContent value="login">
-          <Card>
-            <CardHeader>
-              <CardTitle>Login</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2"></CardContent>
-            <CardFooter>
-              <Button>Save changes</Button>
-            </CardFooter>
-          </Card>
+          <Login />
         </TabsContent>
         <TabsContent value="signUp">
           <SignUp />
