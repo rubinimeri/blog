@@ -25,7 +25,7 @@ const loginSchema = z.object({
   password: z.string().min(5, "Password must be at least 5 characters"),
 });
 
-function SignUp() {
+function Login() {
   const form = useForm({
     resolver: zodResolver(loginSchema),
   });
@@ -63,11 +63,7 @@ function SignUp() {
                   <FormItem>
                     <FormLabel>Password *</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Must contain atleast 5 characters"
-                        {...field}
-                      />
+                      <Input type="password" placeholder="..." {...field} />
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
@@ -86,4 +82,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Login;
