@@ -8,10 +8,10 @@ const usersGet = asyncHandler(async (req, res) => {
 })
 
 const userGet = asyncHandler(async (req, res) => {
-    const { userId } = req.params;
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) {
-        throw new CustomError(`User with ID ${userId} not found`, 404);
+    const { user } = req;
+    const checkUser = await prisma.user.findUnique({ where: { id: user.id } });
+    if (!checkUser) {
+        throw new CustomError(`User with ID ${user.id} not found`, 404);
     }
     return res.status(200).json(user);
 })
