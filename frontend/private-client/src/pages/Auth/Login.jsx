@@ -34,9 +34,31 @@ function Login() {
     },
   });
 
-  function onSubmit(values) {
-    console.log(values);
+  async function onSubmit(values) {
+    try {
+      const { email, password } = values;
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        },
+      );
+      const jwt = await response.json();
+      localStorage.setItem("token", jwt.token);
+      console.log(jwt);
+    } catch (error) {
+      console.error(error);
+    }
   }
+
   return (
     <>
       <Card>
