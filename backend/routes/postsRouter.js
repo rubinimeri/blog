@@ -5,9 +5,9 @@ import {jwtAuthenticate} from "../middleware/jwtAuthenticate.js";
 const postsRouter = Router();
 
 postsRouter.get('/', postsController.postsGet);
+postsRouter.get('/all', jwtAuthenticate, postsController.postsProtectedGet)
 postsRouter.get('/:postId', postsController.postGet);
 
-// Protect POST PUT DELETE routes
 postsRouter.use(jwtAuthenticate)
 
 postsRouter.post('/', postsController.postsCreatePost);

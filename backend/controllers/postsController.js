@@ -89,17 +89,83 @@ const postGet =  asyncHandler(async (req, res) => {
     return res.status(200).json(post);
 })
 
-const postsCreatePost =  asyncHandler(async (req, res) => {
-    // TODO: use jwt to get user id
-    const { id } = await prisma.user.findFirst();
+const postsProtectedGet = asyncHandler(async (req, res) => {
+    const {
+        page = 1,
+        sort = 'createdAt',
+        order = 'desc',
+        search = ''
+    } = req.query;
 
-    const { title, content } = req.body;
+    const validSortFields = ['createdAt', 'title', 'messages'];
+    const validOrderValues = ['asc', 'desc'];
+
+    if (!validSortFields.includes(sort)) {
+        throw new CustomError(`Invalid sort field: ${sort}`, 400);
+    }
+
+    if (!validOrderValues.includes(order)) {
+        throw new CustomError(`Invalid order value: ${order}`, 400);
+    }
+
+    const pageSize = 6;
+    const currentPage = Math.max(1, Number(page));
+    const skip = (currentPage - 1) * pageSize;
+
+    let orderBy;
+    if (sort === 'messages') {
+        orderBy = { [sort]: { _count: order } };
+    } else {
+        orderBy = { [sort]: order };
+    }
+
+    const totalPosts = await prisma.post.count()
+
+    const posts = await prisma.post.findMany({
+        where: {
+            title: {
+                contains: search,
+                mode: 'insensitive'
+            }
+        },
+        orderBy,
+        skip,
+        take: pageSize,
+        include: {
+            author: {
+                select: {
+                    username: true,
+                }
+            },
+            messages: true
+        }
+    });
+    return res.status(200).json({
+        metadata: {
+            totalPosts,
+            currentPage,
+            totalPages: Math.ceil(totalPosts / pageSize),
+        },
+        posts
+    });
+})
+
+const postsCreatePost =  asyncHandler(async (req, res) => {
+    const user = req.user;
+
+    const { title, content, imageUrl, isPublished } = req.body;
     if (!title || !content) {
         throw new CustomError("Title and content are required", 400);
     }
 
     const post = await prisma.post.create({
-            data: { title, content, authorId: id}
+            data: {
+                title,
+                content,
+                imageUrl,
+                authorId: user.id,
+                isPublished: Boolean(isPublished === "true"),
+            },
     })
     return res.status(200).json(post);
 })
@@ -131,6 +197,7 @@ const postDelete =  asyncHandler(async (req, res) => {
 export default {
     postsGet,
     postGet,
+    postsProtectedGet,
     postsCreatePost,
     postsUpdatePut,
     postDelete
