@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.jsx";
+import { useState } from "react";
 
 const loginSchema = z.object({
   email: z.string().max(255).email("Invalid email address"),
@@ -26,6 +27,9 @@ const loginSchema = z.object({
 });
 
 function Login() {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -36,6 +40,7 @@ function Login() {
 
   async function onSubmit(values) {
     try {
+      setLoading(true);
       const { email, password } = values;
 
       const response = await fetch(
@@ -51,12 +56,19 @@ function Login() {
           }),
         },
       );
+
+      if (!response.ok) {
+        throw new Error("Username or password is incorrect");
+      }
+
       const jwt = await response.json();
-      console.log(jwt);
       localStorage.setItem("token", jwt.token);
       window.location.assign("/admin");
     } catch (error) {
       console.error(error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -93,13 +105,14 @@ function Login() {
                       <Input type="password" placeholder="..." {...field} />
                     </FormControl>
                     <FormMessage className="text-xs" />
+                    {error && <p className="text-xs text-red-600">{error}</p>}
                   </FormItem>
                 )}
               />
             </CardContent>
             <CardFooter>
               <Button className="w-full" type="submit">
-                Login
+                {loading ? "Loading..." : "Login"}
               </Button>
             </CardFooter>
           </form>
