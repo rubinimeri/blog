@@ -9,11 +9,20 @@ const usersGet = asyncHandler(async (req, res) => {
 
 const userGet = asyncHandler(async (req, res) => {
     const { user } = req;
-    const checkUser = await prisma.user.findUnique({ where: { id: user.id } });
+    const checkUser = await prisma.user.findUnique({
+        where: { id: user.id } ,
+        include: {
+            posts: {
+                include: {
+                    messages: true,
+                },
+            },
+        },
+    });
     if (!checkUser) {
         throw new CustomError(`User with ID ${user.id} not found`, 404);
     }
-    return res.status(200).json(user);
+    return res.status(200).json(checkUser);
 })
 
 const userDelete = asyncHandler(async (req, res) => {
