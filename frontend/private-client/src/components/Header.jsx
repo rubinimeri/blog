@@ -3,6 +3,11 @@ import PropTypes from "prop-types";
 import { Button } from "@/components/ui/button.jsx";
 
 function Header({ user }) {
+  function handleLogout() {
+    localStorage.removeItem("token");
+    window.location.assign("/");
+  }
+
   return (
     <header className="flex items-center justify-between border-b gap-2 py-2 px-[10vw] max-sm:px-1">
       <img
@@ -21,7 +26,9 @@ function Header({ user }) {
         {user && (
           <>
             <p>{user.username}</p>
-            <Button variant="secondary">Logout</Button>
+            <Button onClick={handleLogout} variant="secondary">
+              Logout
+            </Button>
           </>
         )}
         <ModeToggle />

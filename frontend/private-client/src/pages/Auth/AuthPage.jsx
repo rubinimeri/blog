@@ -7,8 +7,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs.jsx";
+import { useContext } from "react";
+import { UserContext } from "@/UserProvider.jsx";
 
 function AuthPage() {
+  const { loading, user } = useContext(UserContext);
+
+  if (loading) return <div>Loading...</div>;
+  if (user) return <div>Unauthorized!</div>;
   return (
     <>
       <Header />

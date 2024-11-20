@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input.jsx";
 import { Button } from "@/components/ui/button.jsx";
@@ -27,7 +26,6 @@ const loginSchema = z.object({
 });
 
 function Login() {
-  const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -56,7 +54,7 @@ function Login() {
       const jwt = await response.json();
       console.log(jwt);
       localStorage.setItem("token", jwt.token);
-      navigate("/admin");
+      window.location.assign("/admin");
     } catch (error) {
       console.error(error);
     }

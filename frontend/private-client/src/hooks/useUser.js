@@ -6,8 +6,6 @@ function useUser() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -31,14 +29,13 @@ function useUser() {
       } catch (error) {
         console.error("Error fetching user:", error);
         setError(error);
-        navigate("/"); // Navigate if fetching the user fails
       } finally {
         setLoading(false);
       }
     };
 
     fetchUser();
-  }, [navigate]);
+  }, []);
 
   return { error, loading, user };
 }

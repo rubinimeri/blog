@@ -1,12 +1,11 @@
 import Header from "@/components/Header.jsx";
-import useUser from "@/hooks/useUser.js";
+import { useContext } from "react";
+import { UserContext } from "@/UserProvider.jsx";
 
 function Admin() {
-  const { loading, error, user } = useUser();
+  const { loading, user } = useContext(UserContext);
 
   if (loading) return <div>Loading...</div>;
-
-  if (error) return <div>Error!</div>;
 
   return (
     <>
