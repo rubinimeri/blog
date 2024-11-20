@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import SignUp from "@/pages/Auth/SignUp.jsx";
 import Login from "@/pages/Auth/Login.jsx";
 import {
@@ -6,26 +7,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs.jsx";
-import { ModeToggle } from "@/components/mode-toggle.jsx";
 
 function AuthPage() {
   return (
     <>
-      <header className="flex items-center justify-center gap-2 p-4">
-        <img
-          src="/logo-dark.png"
-          alt="logo"
-          className="hidden dark:block"
-          width={300}
-        />
-        <img
-          src="/logo-light.png"
-          alt="logo"
-          className="block dark:hidden"
-          width={300}
-        />
-        <ModeToggle />
-      </header>
+      <Header />
       <main className="min-h-[85vh] flex justify-center items-center">
         <Tabs defaultValue="signUp" className="w-[400px]">
           <TabsList className="grid w-full grid-cols-2">

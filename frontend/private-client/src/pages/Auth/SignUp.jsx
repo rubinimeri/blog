@@ -40,10 +40,22 @@ const signUpSchema = z
 function SignUp() {
   const form = useForm({
     resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
-  function onSubmit(values) {
-    console.log(values);
+  async function onSubmit(values) {
+    try {
+      const { username, email, password, confirmPassword } = values;
+
+      console.log(values);
+    } catch (error) {
+      console.error(error);
+    }
   }
   return (
     <>
