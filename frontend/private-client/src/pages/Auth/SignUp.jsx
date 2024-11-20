@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import {
@@ -38,6 +39,7 @@ const signUpSchema = z
   });
 
 function SignUp() {
+  const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -69,7 +71,7 @@ function SignUp() {
       );
       const jwt = await response.json();
       localStorage.setItem("token", jwt.token);
-      console.log(jwt);
+      navigate("/admin");
     } catch (error) {
       console.error(error);
     }
