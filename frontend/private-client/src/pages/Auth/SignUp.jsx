@@ -52,7 +52,24 @@ function SignUp() {
     try {
       const { username, email, password, confirmPassword } = values;
 
-      console.log(values);
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/auth/sign-up`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+            confirmPassword,
+          }),
+        },
+      );
+      const jwt = await response.json();
+      localStorage.setItem("token", jwt.token);
+      console.log(jwt);
     } catch (error) {
       console.error(error);
     }
