@@ -14,14 +14,12 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card.jsx";
+import PostsTable from "@/pages/Admin/PostsTable.jsx";
 
 function Admin() {
-  const {
-    loading,
-    user,
-    user: { posts },
-  } = useContext(UserContext);
-  console.log(posts);
+  const { loading, user } = useContext(UserContext);
+
+  console.log(user.posts);
 
   if (loading) return <div>Loading...</div>;
   if (!user)
@@ -34,7 +32,7 @@ function Admin() {
   return (
     <>
       <Header user={user} />
-      <Tabs defaultValue="posts" className="max-w-[800px] mx-auto">
+      <Tabs defaultValue="posts" className="max-w-[900px] mx-auto mt-8">
         <TabsList className="w-full flex">
           <TabsTrigger className="flex-1" value="posts">
             Posts
@@ -51,7 +49,9 @@ function Admin() {
                 All your published & un-published posts here.
               </CardDescription>
             </CardHeader>
-            <CardContent>Content</CardContent>
+            <CardContent>
+              <PostsTable posts={user.posts} author={user.username} />
+            </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="create">
