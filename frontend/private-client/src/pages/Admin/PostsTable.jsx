@@ -84,11 +84,11 @@ function PostsTable({ author, posts, setSelectedPost, switchTab }) {
       <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">Image</TableHead>
-          <TableHead>Title</TableHead>
-          <TableHead>Author</TableHead>
-          <TableHead>Created</TableHead>
-          <TableHead>Updated</TableHead>
-          <TableHead>Published</TableHead>
+          <TableHead className="min-w-[200px]">Title</TableHead>
+          <TableHead className="w-max">Author</TableHead>
+          <TableHead className="min-w-[130px]">Created</TableHead>
+          <TableHead className="min-w-[130px]">Updated</TableHead>
+          <TableHead className="w-max">Published</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

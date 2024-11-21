@@ -17,6 +17,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "@/UserProvider.jsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Comment from "@/pages/Admin/Comment.jsx";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
@@ -28,7 +29,6 @@ const formSchema = z.object({
 function EditPost({ post, setActiveTab, setSelectedPost }) {
   const { setUser } = useContext(UserContext);
   const [error, setError] = useState(null);
-  const { id } = post;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -43,11 +43,10 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
   async function onSubmit(values) {
     try {
       const { title, content, thumbnail, isPublished } = values;
-      console.log(isPublished);
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/posts/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/posts/${post.id}`,
         {
           method: "PUT",
           headers: {
@@ -66,7 +65,7 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
       const data = await response.json();
       setUser((user) => ({
         ...user,
-        posts: [data, ...user.posts.filter((post) => post.id !== id)],
+        posts: [data, ...user.posts.filter((p) => p.id !== post.id)],
       }));
     } catch (err) {
       console.error("Error editing post: ", err.message);
@@ -74,6 +73,27 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
     } finally {
       setSelectedPost(null);
       setActiveTab("posts");
+    }
+  }
+
+  async function handleDeleteComment(id) {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/posts/${post.id}/messages/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `bearer ${token}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+      console.log(data);
+    } catch (err) {
+      console.error("Error deleting post: ", err.message);
     }
   }
 
@@ -233,6 +253,13 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
             </FormItem>
           )}
         />
+        {post.messages.map((message) => (
+          <Comment
+            key={message.id}
+            {...message}
+            handleDelete={handleDeleteComment}
+          />
+        ))}
         {error && (
           <p className="font-bold text-xs text-destructive"> {error} </p>
         )}
