@@ -15,11 +15,10 @@ import {
   CardContent,
 } from "@/components/ui/card.jsx";
 import PostsTable from "@/pages/Admin/PostsTable.jsx";
+import CreatePostForm from "@/pages/Admin/CreatePostForm.jsx";
 
 function Admin() {
   const { loading, user } = useContext(UserContext);
-
-  console.log(user.posts);
 
   if (loading) return <div>Loading...</div>;
   if (!user)
@@ -60,7 +59,9 @@ function Admin() {
               <CardTitle>Create Post</CardTitle>
               <CardDescription>Create a new post here.</CardDescription>
             </CardHeader>
-            <CardContent>Content</CardContent>
+            <CardContent>
+              <CreatePostForm />
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
