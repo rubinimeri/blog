@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button.jsx";
 import { useContext } from "react";
 import { UserContext } from "@/UserProvider.jsx";
 
-function PostsTable({ author, posts }) {
+function PostsTable({ author, posts, setSelectedPost, switchTab }) {
   const { setUser } = useContext(UserContext);
 
   async function handleDelete(e) {
@@ -76,13 +76,16 @@ function PostsTable({ author, posts }) {
               <Switch checked={post.isPublished} />
             </TableCell>
             <TableCell className="text-right">
-              <Link
-                to={`/admin/${post.id}`}
-                className="text-xs underline flex justify-end items-center gap-1.5 text-primary hover:no-underline"
+              <Button
+                variant="link"
+                onClick={() => {
+                  setSelectedPost(post);
+                  switchTab("edit");
+                }}
               >
                 Edit
                 <SquarePen width={14} />
-              </Link>
+              </Button>
             </TableCell>
             <TableCell className="text-right">
               <Button

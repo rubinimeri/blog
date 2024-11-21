@@ -179,7 +179,7 @@ const postsUpdatePut=  asyncHandler(async (req, res) => {
     }
 
     const post = await prisma.post.update({
-        data: { title, content, imageUrl, isPublished },
+        data: { title, content, imageUrl, isPublished: isPublished === "true" },
         where: { id: postId }
     })
     return res.status(200).json(post);
