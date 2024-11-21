@@ -27,7 +27,7 @@ const formSchema = z.object({
 
 function EditPost({ post, setActiveTab, setSelectedPost }) {
   const { setUser } = useContext(UserContext);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const { id } = post;
 
   const form = useForm({
@@ -43,8 +43,8 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
   async function onSubmit(values) {
     try {
       const { title, content, thumbnail, isPublished } = values;
+      console.log(isPublished);
       const token = localStorage.getItem("token");
-      console.log(token);
 
       const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/posts/${id}`,
@@ -58,7 +58,7 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
             title,
             content,
             imageUrl: thumbnail,
-            isPublished,
+            isPublished: isPublished ? "true" : "false",
           }),
         },
       );
@@ -70,6 +70,7 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
       }));
     } catch (err) {
       console.error("Error editing post: ", err.message);
+      setError("Error editing post!");
     } finally {
       setSelectedPost(null);
       setActiveTab("posts");
@@ -232,21 +233,24 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
             </FormItem>
           )}
         />
-        <div>
-          <p> {error} </p>
-          <div className="flex items-center space-x-3">
-            <Button type="submit">Submit</Button>
-            <Button
-              variant="secondary"
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab("posts");
-                setSelectedPost(null);
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
+        {error && (
+          <p className="font-bold text-xs text-destructive"> {error} </p>
+        )}
+        <div className="flex items-center space-x-3">
+          <Button className="flex-1" type="submit">
+            Submit
+          </Button>
+          <Button
+            className="flex-1"
+            variant="secondary"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab("posts");
+              setSelectedPost(null);
+            }}
+          >
+            Cancel
+          </Button>
         </div>
       </form>
     </Form>
