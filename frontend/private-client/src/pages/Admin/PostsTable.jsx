@@ -10,9 +10,41 @@ import {
 import convertTimestamp from "@/utils/convertTimestamp.js";
 import { Link } from "react-router-dom";
 import { Switch } from "@/components/ui/switch.jsx";
-import { SquarePen } from "lucide-react";
+import { SquarePen, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button.jsx";
+import { useContext } from "react";
+import { UserContext } from "@/UserProvider.jsx";
 
 function PostsTable({ author, posts }) {
+  const { setUser } = useContext(UserContext);
+
+  async function handleDelete(e) {
+    try {
+      const { id } = e.target;
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/posts/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete post");
+      }
+
+      setUser((user) => ({
+        ...user,
+        posts: posts.filter((post) => post.id !== id),
+      }));
+    } catch (error) {
+      console.error("Error deleting post", error);
+    }
+  }
   return (
     <Table>
       <TableHeader>
@@ -40,24 +72,34 @@ function PostsTable({ author, posts }) {
             <TableCell className="font-semibold">{author}</TableCell>
             <TableCell>{convertTimestamp(post.createdAt)}</TableCell>
             <TableCell>{convertTimestamp(post.updatedAt)}</TableCell>
-            <TableCell className="text-right">
+            <TableCell className="">
               <Switch checked={post.isPublished} />
             </TableCell>
             <TableCell className="text-right">
               <Link
                 to={`/admin/${post.id}`}
-                className="text-xs underline flex items-center gap-1.5 text-primary hover:no-underline"
+                className="text-xs underline flex justify-end items-center gap-1.5 text-primary hover:no-underline"
               >
                 Edit
                 <SquarePen width={14} />
               </Link>
+            </TableCell>
+            <TableCell className="text-right">
+              <Button
+                className="align-middle rounded-md h-min px-1 py-1"
+                variant={"destructive"}
+                id={post.id}
+                onClick={handleDelete}
+              >
+                <Trash2 />
+              </Button>
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
       <TableFooter>
         <TableRow>
-          <TableCell colSpan={6}>Total Posts</TableCell>
+          <TableCell colSpan={7}>Total Posts</TableCell>
           <TableCell className="text-right">{posts.length}</TableCell>
         </TableRow>
       </TableFooter>
