@@ -173,13 +173,13 @@ const postsCreatePost =  asyncHandler(async (req, res) => {
 const postsUpdatePut=  asyncHandler(async (req, res) => {
     const { postId } = req.params;
 
-    const { title, content } = req.body;
+    const { title, content, imageUrl, isPublished } = req.body;
     if (!title || !content) {
         throw new CustomError("Title and content are required", 400);
     }
 
     const post = await prisma.post.update({
-        data: { title, content },
+        data: { title, content, imageUrl, isPublished },
         where: { id: postId }
     })
     return res.status(200).json(post);
