@@ -16,18 +16,19 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Editor } from "@tinymce/tinymce-react";
 import fileToBase64 from "@/utils/fileToBase64.js";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "@/UserProvider.jsx";
 
 const formSchema = z.object({
-  title: z.string(),
-  content: z.string(),
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  content: z.string().min(2, "Content must be at least 10 characters"),
   thumbnail: z.string(),
-  isPublished: z.boolean().default(true).optional(),
+  isPublished: z.boolean().optional(),
 });
 
-function CreatePostForm({ username = "rubinimeri" }) {
+function CreatePostForm({ username = "rubinimeri", switchTab }) {
   const { setUser } = useContext(UserContext);
+  const [error, setError] = useState("");
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,10 +59,17 @@ function CreatePostForm({ username = "rubinimeri" }) {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error("Failed to create post");
+      }
+
       const post = await response.json();
       setUser((user) => ({ ...user, posts: [post, ...user.posts] }));
     } catch (error) {
       console.error("Form submission error", error);
+      setError(error.message);
+    } finally {
+      switchTab();
     }
   }
 
@@ -211,6 +219,7 @@ function CreatePostForm({ username = "rubinimeri" }) {
             </FormItem>
           )}
         />
+        <p> {error} </p>
         <Button type="submit">Submit</Button>
       </form>
     </Form>
