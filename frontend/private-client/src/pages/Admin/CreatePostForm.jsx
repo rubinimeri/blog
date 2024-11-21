@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Editor } from "@tinymce/tinymce-react";
 import fileToBase64 from "@/utils/fileToBase64.js";
+import { useContext } from "react";
+import { UserContext } from "@/UserProvider.jsx";
 
 const formSchema = z.object({
   title: z.string(),
@@ -25,6 +27,7 @@ const formSchema = z.object({
 });
 
 function CreatePostForm({ username = "rubinimeri" }) {
+  const { setUser } = useContext(UserContext);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,9 +38,28 @@ function CreatePostForm({ username = "rubinimeri" }) {
     },
   });
 
-  function onSubmit(values) {
+  async function onSubmit(values) {
     try {
+      const { title, content, thumbnail, isPublished } = values;
       console.log(values);
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/posts`, {
+        method: "POST",
+        headers: {
+          Authorization: `bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          imageUrl: thumbnail,
+          isPublished,
+        }),
+      });
+
+      const post = await response.json();
+      setUser((user) => ({ ...user, posts: [post, ...user.posts] }));
     } catch (error) {
       console.error("Form submission error", error);
     }

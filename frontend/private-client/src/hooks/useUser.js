@@ -35,7 +35,7 @@ function useUser() {
     fetchUser();
   }, []);
 
-  return { error, loading, user };
+  return { error, loading, user, setUser };
 }
 
 export default useUser;

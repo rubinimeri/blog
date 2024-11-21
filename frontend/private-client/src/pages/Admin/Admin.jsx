@@ -31,7 +31,10 @@ function Admin() {
   return (
     <>
       <Header user={user} />
-      <Tabs defaultValue="posts" className="max-w-[900px] mx-auto mt-8">
+      <Tabs
+        defaultValue="posts"
+        className="max-w-[900px] mx-auto mt-8 shadow-xl dark:shadow-gray-800"
+      >
         <TabsList className="w-full flex">
           <TabsTrigger className="flex-1" value="posts">
             Posts

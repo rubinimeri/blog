@@ -10,6 +10,7 @@ import {
 import convertTimestamp from "@/utils/convertTimestamp.js";
 import { Link } from "react-router-dom";
 import { Switch } from "@/components/ui/switch.jsx";
+import { SquarePen } from "lucide-react";
 
 function PostsTable({ author, posts }) {
   return (
@@ -40,10 +41,16 @@ function PostsTable({ author, posts }) {
             <TableCell>{convertTimestamp(post.createdAt)}</TableCell>
             <TableCell>{convertTimestamp(post.updatedAt)}</TableCell>
             <TableCell className="text-right">
-              <Switch />
+              <Switch checked={post.isPublished} />
             </TableCell>
             <TableCell className="text-right">
-              <Link to={`/admin/${post.id}`}>Edit</Link>
+              <Link
+                to={`/admin/${post.id}`}
+                className="text-xs underline flex items-center gap-1.5 text-primary hover:no-underline"
+              >
+                Edit
+                <SquarePen width={14} />
+              </Link>
             </TableCell>
           </TableRow>
         ))}
