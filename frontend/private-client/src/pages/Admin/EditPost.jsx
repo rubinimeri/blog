@@ -234,7 +234,19 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
         />
         <div>
           <p> {error} </p>
-          <Button type="submit">Submit</Button>
+          <div className="flex items-center space-x-3">
+            <Button type="submit">Submit</Button>
+            <Button
+              variant="secondary"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab("posts");
+                setSelectedPost(null);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

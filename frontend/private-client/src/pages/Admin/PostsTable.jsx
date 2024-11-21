@@ -8,7 +8,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import convertTimestamp from "@/utils/convertTimestamp.js";
-import { Link } from "react-router-dom";
 import { Switch } from "@/components/ui/switch.jsx";
 import { SquarePen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
@@ -45,6 +44,41 @@ function PostsTable({ author, posts, setSelectedPost, switchTab }) {
       console.error("Error deleting post", error);
     }
   }
+
+  async function handleSwitch(post) {
+    try {
+      const { id, title, content, thumbnail, isPublished } = post;
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/posts/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            content,
+            imageUrl: thumbnail,
+            isPublished: isPublished ? "false" : "true",
+          }),
+        },
+      );
+
+      const data = await response.json();
+      setUser((user) => {
+        const postIndex = user.posts.findIndex((post) => post.id === data.id);
+        const postsCopy = [...user.posts];
+        postsCopy[postIndex] = data;
+        return { ...user, posts: postsCopy };
+      });
+    } catch (err) {
+      console.error("Error: ", err.message);
+    }
+  }
+
   return (
     <Table>
       <TableHeader>
@@ -73,7 +107,10 @@ function PostsTable({ author, posts, setSelectedPost, switchTab }) {
             <TableCell>{convertTimestamp(post.createdAt)}</TableCell>
             <TableCell>{convertTimestamp(post.updatedAt)}</TableCell>
             <TableCell className="">
-              <Switch checked={post.isPublished} />
+              <Switch
+                checked={post.isPublished}
+                onClick={() => handleSwitch(post)}
+              />
             </TableCell>
             <TableCell className="text-right">
               <Button
