@@ -13,6 +13,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input.jsx";
 import { Editor } from "@tinymce/tinymce-react";
 import fileToBase64 from "@/utils/fileToBase64.js";
@@ -217,14 +228,26 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
             <FormItem>
               <FormLabel>Thumbnail</FormLabel>
               <div className="flex items-center">
-                <div className="flex aspect-video h-9">
-                  <img
-                    src={field.value}
-                    alt=""
-                    width={50}
-                    className="rounded-sm"
-                  />
-                </div>
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <div className="flex aspect-video h-9">
+                      <img
+                        src={field.value}
+                        alt="thumbnail"
+                        width={50}
+                        className="rounded-sm"
+                      />
+                    </div>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <div className="flex">
+                      <img src={field.value} alt="thumbnail preview" />
+                    </div>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Close</AlertDialogCancel>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
                 <FormControl>
                   <Input
                     type="file"
