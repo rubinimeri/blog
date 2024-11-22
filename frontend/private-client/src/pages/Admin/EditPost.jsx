@@ -15,13 +15,9 @@ import {
 } from "@/components/ui/accordion";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input.jsx";
@@ -36,6 +32,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Comment from "@/pages/Admin/Comment.jsx";
 import { useToast } from "@/hooks/use-toast.js";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
@@ -47,12 +44,13 @@ const formSchema = z.object({
 function EditPost({ post, setActiveTab, setSelectedPost }) {
   const { setUser } = useContext(UserContext);
   const { toast } = useToast();
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     const getMessages = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("token");
 
         const response = await fetch(
@@ -70,6 +68,12 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
         setMessages(data);
       } catch (err) {
         console.log(err);
+        toast({
+          title: "Error fetching comments!",
+          description: err.message,
+        });
+      } finally {
+        setLoading(false);
       }
     };
     getMessages();
@@ -89,6 +93,7 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
 
   async function onSubmit(values) {
     try {
+      setLoading(true);
       const { title, content, thumbnail, isPublished } = values;
       const token = localStorage.getItem("token");
 
@@ -121,12 +126,12 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
       });
     } catch (err) {
       console.error("Error editing post: ", err.message);
-      setError("Error editing post!");
       toast({
         title: "Post edit failed!",
         description: err.message,
       });
     } finally {
+      setLoading(false);
       setSelectedPost(null);
       setActiveTab("posts");
     }
@@ -343,12 +348,9 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
             </AccordionItem>
           </Accordion>
         )}
-        {error && (
-          <p className="font-bold text-xs text-destructive"> {error} </p>
-        )}
         <div className="flex items-center space-x-3">
-          <Button className="flex-1" type="submit">
-            Submit
+          <Button type="submit" className="flex-1">
+            {loading ? <Loader2 className="animate-spin" /> : "Submit"}
           </Button>
           <Button
             className="flex-1"

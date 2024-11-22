@@ -19,6 +19,7 @@ import fileToBase64 from "@/utils/fileToBase64.js";
 import { useContext, useState } from "react";
 import { UserContext } from "@/UserProvider.jsx";
 import { useToast } from "@/hooks/use-toast.js";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
@@ -29,7 +30,7 @@ const formSchema = z.object({
 
 function CreatePostForm({ username = "rubinimeri", switchTab }) {
   const { setUser } = useContext(UserContext);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const form = useForm({
@@ -44,6 +45,7 @@ function CreatePostForm({ username = "rubinimeri", switchTab }) {
 
   async function onSubmit(values) {
     try {
+      setLoading(true);
       const { title, content, thumbnail, isPublished } = values;
       console.log(values);
       const token = localStorage.getItem("token");
@@ -75,12 +77,12 @@ function CreatePostForm({ username = "rubinimeri", switchTab }) {
       });
     } catch (error) {
       console.error("Form submission error", error);
-      setError(error.message);
       toast({
         title: "Post creation failed!",
         description: error.message,
       });
     } finally {
+      setLoading(false);
       switchTab();
     }
   }
@@ -231,8 +233,9 @@ function CreatePostForm({ username = "rubinimeri", switchTab }) {
             </FormItem>
           )}
         />
-        <p> {error} </p>
-        <Button type="submit">Submit</Button>
+        <Button type="submit">
+          {loading ? <Loader2 className="animate-spin" /> : "Submit"}
+        </Button>
       </form>
     </Form>
   );

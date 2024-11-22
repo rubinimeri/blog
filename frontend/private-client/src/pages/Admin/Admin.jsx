@@ -17,13 +17,22 @@ import {
 import PostsTable from "@/pages/Admin/PostsTable.jsx";
 import CreatePostForm from "@/pages/Admin/CreatePostForm.jsx";
 import EditPost from "@/pages/Admin/EditPost.jsx";
+import { Loader2 } from "lucide-react";
 
 function Admin() {
   const { loading, user, setUser } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("posts");
   const [selectedPost, setSelectedPost] = useState(null);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>
+        <Header />
+        <div className="min-h-[85vh] flex justify-center items-center">
+          <Loader2 className="animate-spin" width={50} height={50} />
+        </div>
+      </div>
+    );
   if (!user)
     return (
       <div>
