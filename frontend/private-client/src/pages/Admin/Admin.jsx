@@ -22,6 +22,9 @@ import { Loader2 } from "lucide-react";
 import usePosts from "@/hooks/usePosts.js";
 import Pages from "@/pages/Admin/Pages.jsx";
 import { useParams } from "react-router-dom";
+import Sort from "@/pages/Admin/Sort.jsx";
+import { Input } from "@/components/ui/input.jsx";
+import { Button } from "@/components/ui/button.jsx";
 
 function Admin() {
   const { page } = useParams();
@@ -81,11 +84,24 @@ function Admin() {
           </TabsList>
           <TabsContent value="posts">
             <Card>
-              <CardHeader>
-                <CardTitle>Posts</CardTitle>
-                <CardDescription>
-                  All your published & un-published posts here.
-                </CardDescription>
+              <CardHeader className="flex-row flex-wrap justify-between gap-2 items-start">
+                <div className="space-y-2">
+                  <CardTitle>Posts</CardTitle>
+                  <CardDescription>
+                    All your published & un-published posts here.
+                  </CardDescription>
+                </div>
+                <div className="flex gap-4 flex-wrap">
+                  <Sort setSortValue={setSortValue} setOrder={setOrder} />
+                  <div className="flex gap-2 min-w-200px">
+                    <Input type="search" placeholder="Search" />
+                    <Button
+                      onClick={(e) => setSearch(e.target.previousSibling.value)}
+                    >
+                      Search
+                    </Button>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <PostsTable
