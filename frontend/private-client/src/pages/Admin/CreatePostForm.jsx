@@ -60,7 +60,7 @@ function CreatePostForm({ username = "rubinimeri", switchTab }) {
           title,
           content,
           imageUrl: thumbnail,
-          isPublished,
+          isPublished: isPublished ? "true" : "false",
         }),
       });
 
