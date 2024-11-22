@@ -18,6 +18,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import fileToBase64 from "@/utils/fileToBase64.js";
 import { useContext, useState } from "react";
 import { UserContext } from "@/UserProvider.jsx";
+import { useToast } from "@/hooks/use-toast.js";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
@@ -29,6 +30,8 @@ const formSchema = z.object({
 function CreatePostForm({ username = "rubinimeri", switchTab }) {
   const { setUser } = useContext(UserContext);
   const [error, setError] = useState("");
+  const { toast } = useToast();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,9 +68,18 @@ function CreatePostForm({ username = "rubinimeri", switchTab }) {
 
       const post = await response.json();
       setUser((user) => ({ ...user, posts: [post, ...user.posts] }));
+
+      toast({
+        title: "Successfully created post!",
+        description: `Title: ${post.title}`,
+      });
     } catch (error) {
       console.error("Form submission error", error);
       setError(error.message);
+      toast({
+        title: "Post creation failed!",
+        description: error.message,
+      });
     } finally {
       switchTab();
     }

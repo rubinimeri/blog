@@ -13,9 +13,11 @@ import { SquarePen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
 import { useContext } from "react";
 import { UserContext } from "@/UserProvider.jsx";
+import { useToast } from "@/hooks/use-toast.js";
 
 function PostsTable({ author, posts, setSelectedPost, switchTab }) {
   const { setUser } = useContext(UserContext);
+  const { toast } = useToast();
 
   async function handleDelete(e) {
     try {
@@ -36,12 +38,23 @@ function PostsTable({ author, posts, setSelectedPost, switchTab }) {
         throw new Error("Failed to delete post");
       }
 
+      const data = await response.json();
+
       setUser((user) => ({
         ...user,
         posts: posts.filter((post) => post.id !== id),
       }));
+
+      toast({
+        title: "Successfully deleted post!",
+        description: `Title: ${data.title}`,
+      });
     } catch (error) {
       console.error("Error deleting post", error);
+      toast({
+        title: "Post deletion failed!",
+        description: error.message,
+      });
     }
   }
 
@@ -74,6 +87,18 @@ function PostsTable({ author, posts, setSelectedPost, switchTab }) {
         postsCopy[postIndex] = data;
         return { ...user, posts: postsCopy };
       });
+
+      if (data.isPublished) {
+        toast({
+          title: "Successfully published post!",
+          description: `Title: ${post.title}`,
+        });
+      } else {
+        toast({
+          title: "Successfully unpublished post!",
+          description: `Title: ${post.title}`,
+        });
+      }
     } catch (err) {
       console.error("Error: ", err.message);
     }

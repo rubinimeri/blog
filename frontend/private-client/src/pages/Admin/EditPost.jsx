@@ -45,6 +45,7 @@ const formSchema = z.object({
 });
 
 function EditPost({ post, setActiveTab, setSelectedPost }) {
+  const { setUser } = useContext(UserContext);
   const { toast } = useToast();
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -113,9 +114,18 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
         ...user,
         posts: [data, ...user.posts.filter((p) => p.id !== post.id)],
       }));
+
+      toast({
+        title: "Successfully edited post!",
+        description: `Title: ${post.title}`,
+      });
     } catch (err) {
       console.error("Error editing post: ", err.message);
       setError("Error editing post!");
+      toast({
+        title: "Post edit failed!",
+        description: err.message,
+      });
     } finally {
       setSelectedPost(null);
       setActiveTab("posts");
