@@ -7,6 +7,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form.jsx";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input.jsx";
 import { Editor } from "@tinymce/tinymce-react";
 import fileToBase64 from "@/utils/fileToBase64.js";
@@ -253,13 +259,22 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
             </FormItem>
           )}
         />
-        {post.messages.map((message) => (
-          <Comment
-            key={message.id}
-            {...message}
-            handleDelete={handleDeleteComment}
-          />
-        ))}
+        {post.messages && (
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Comments</AccordionTrigger>
+              <AccordionContent>
+                {post.messages.map((message) => (
+                  <Comment
+                    key={message.id}
+                    {...message}
+                    handleDelete={handleDeleteComment}
+                  />
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        )}
         {error && (
           <p className="font-bold text-xs text-destructive"> {error} </p>
         )}
