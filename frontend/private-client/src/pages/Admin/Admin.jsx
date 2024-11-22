@@ -13,13 +13,27 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card.jsx";
 import PostsTable from "@/pages/Admin/PostsTable.jsx";
 import CreatePostForm from "@/pages/Admin/CreatePostForm.jsx";
 import EditPost from "@/pages/Admin/EditPost.jsx";
 import { Loader2 } from "lucide-react";
+import usePosts from "@/hooks/usePosts.js";
+import Pages from "@/pages/Admin/Pages.jsx";
+import { useParams } from "react-router-dom";
 
 function Admin() {
+  const { page } = useParams();
+  const [sortValue, setSortValue] = useState("createdAt");
+  const [order, setOrder] = useState("asc");
+  const [search, setSearch] = useState("");
+  const { posts, setPosts, metadata } = usePosts(
+    page,
+    sortValue,
+    order,
+    search,
+  );
   const { loading, user, setUser } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("posts");
   const [selectedPost, setSelectedPost] = useState(null);
@@ -33,6 +47,7 @@ function Admin() {
         </div>
       </div>
     );
+
   if (!user)
     return (
       <div>
@@ -47,7 +62,7 @@ function Admin() {
         <Tabs
           onValueChange={setActiveTab}
           value={activeTab}
-          className={`${activeTab === "posts" ? "max-w-[1200px]" : "max-w-[800px]"} mx-auto mt-8 shadow-lg dark:shadow-slate-800`}
+          className={`${activeTab === "posts" ? "max-w-[1200px]" : "max-w-[800px]"} mx-auto mt-8 shadow-lg dark:shadow-slate-800 transition-all duration-500 ease`}
         >
           <TabsList className="w-full flex">
             <TabsTrigger className="flex-1" value="posts">
@@ -76,10 +91,14 @@ function Admin() {
                 <PostsTable
                   switchTab={setActiveTab}
                   setSelectedPost={setSelectedPost}
-                  posts={user.posts}
+                  posts={posts}
+                  setPosts={setPosts}
                   author={user.username}
                 />
               </CardContent>
+              <CardFooter>
+                {metadata && <Pages metadata={metadata} />}
+              </CardFooter>
             </Card>
           </TabsContent>
           <TabsContent value="create">
@@ -90,6 +109,7 @@ function Admin() {
               </CardHeader>
               <CardContent>
                 <CreatePostForm
+                  setPosts={setPosts}
                   username={user.username}
                   switchTab={() => setActiveTab("posts")}
                 />
@@ -106,6 +126,7 @@ function Admin() {
                 {selectedPost && (
                   <EditPost
                     post={selectedPost}
+                    setPosts={setPosts}
                     setActiveTab={setActiveTab}
                     setSelectedPost={setSelectedPost}
                     setUser={setUser}

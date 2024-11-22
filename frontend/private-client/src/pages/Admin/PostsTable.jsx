@@ -11,12 +11,9 @@ import convertTimestamp from "@/utils/convertTimestamp.js";
 import { Switch } from "@/components/ui/switch.jsx";
 import { SquarePen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
-import { useContext } from "react";
-import { UserContext } from "@/UserProvider.jsx";
 import { useToast } from "@/hooks/use-toast.js";
 
-function PostsTable({ author, posts, setSelectedPost, switchTab }) {
-  const { setUser } = useContext(UserContext);
+function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
   const { toast } = useToast();
 
   async function handleDelete(e) {
@@ -40,10 +37,7 @@ function PostsTable({ author, posts, setSelectedPost, switchTab }) {
 
       const data = await response.json();
 
-      setUser((user) => ({
-        ...user,
-        posts: posts.filter((post) => post.id !== id),
-      }));
+      setTimeout(() => window.location.reload(), 1000);
 
       toast({
         title: "Successfully deleted post!",
@@ -81,12 +75,11 @@ function PostsTable({ author, posts, setSelectedPost, switchTab }) {
       );
 
       const data = await response.json();
-      setUser((user) => {
-        const postIndex = user.posts.findIndex((post) => post.id === data.id);
-        const postsCopy = [...user.posts];
-        postsCopy[postIndex] = data;
-        return { ...user, posts: postsCopy };
-      });
+
+      const postIndex = posts.findIndex((post) => post.id === data.id);
+      const postCopy = [...posts];
+      postCopy[postIndex] = data;
+      setPosts(postCopy);
 
       if (data.isPublished) {
         toast({
@@ -114,58 +107,60 @@ function PostsTable({ author, posts, setSelectedPost, switchTab }) {
           <TableHead className="min-w-[130px]">Created</TableHead>
           <TableHead className="min-w-[130px]">Updated</TableHead>
           <TableHead className="w-max">Published</TableHead>
+          <TableHead colSpan={2}></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
-          <TableRow key={post.id}>
-            <TableCell>
-              <img
-                className="rounded-sm"
-                src={post.imageUrl}
-                alt="image"
-                width={30}
-              />
-            </TableCell>
-            <TableCell>{post.title}</TableCell>
-            <TableCell className="font-semibold">{author}</TableCell>
-            <TableCell>{convertTimestamp(post.createdAt)}</TableCell>
-            <TableCell>{convertTimestamp(post.updatedAt)}</TableCell>
-            <TableCell className="">
-              <Switch
-                checked={post.isPublished}
-                onClick={() => handleSwitch(post)}
-              />
-            </TableCell>
-            <TableCell className="text-right">
-              <Button
-                variant="link"
-                onClick={() => {
-                  setSelectedPost(post);
-                  switchTab("edit");
-                }}
-              >
-                Edit
-                <SquarePen width={14} />
-              </Button>
-            </TableCell>
-            <TableCell className="text-right">
-              <Button
-                className="align-middle rounded-md h-min px-1 py-1"
-                variant={"destructive"}
-                id={post.id}
-                onClick={handleDelete}
-              >
-                <Trash2 />
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
+        {posts &&
+          posts.map((post) => (
+            <TableRow key={post.id}>
+              <TableCell>
+                <img
+                  className="rounded-sm"
+                  src={post.imageUrl}
+                  alt="image"
+                  width={30}
+                />
+              </TableCell>
+              <TableCell>{post.title}</TableCell>
+              <TableCell className="font-semibold">{author}</TableCell>
+              <TableCell>{convertTimestamp(post.createdAt)}</TableCell>
+              <TableCell>{convertTimestamp(post.updatedAt)}</TableCell>
+              <TableCell className="">
+                <Switch
+                  checked={post.isPublished}
+                  onClick={() => handleSwitch(post)}
+                />
+              </TableCell>
+              <TableCell className="text-right">
+                <Button
+                  variant="link"
+                  onClick={() => {
+                    setSelectedPost(post);
+                    switchTab("edit");
+                  }}
+                >
+                  Edit
+                  <SquarePen width={14} />
+                </Button>
+              </TableCell>
+              <TableCell className="text-right">
+                <Button
+                  className="align-middle rounded-md h-min px-1 py-1"
+                  variant={"destructive"}
+                  id={post.id}
+                  onClick={handleDelete}
+                >
+                  <Trash2 />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
       <TableFooter>
         <TableRow>
           <TableCell colSpan={7}>Total Posts</TableCell>
-          <TableCell className="text-right">{posts.length}</TableCell>
+          <TableCell className="text-right">{posts && posts.length}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>

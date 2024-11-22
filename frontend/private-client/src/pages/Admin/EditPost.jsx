@@ -26,8 +26,7 @@ import fileToBase64 from "@/utils/fileToBase64.js";
 import { Checkbox } from "@/components/ui/checkbox.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import * as z from "zod";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "@/UserProvider.jsx";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Comment from "@/pages/Admin/Comment.jsx";
@@ -41,8 +40,7 @@ const formSchema = z.object({
   isPublished: z.boolean().optional(),
 });
 
-function EditPost({ post, setActiveTab, setSelectedPost }) {
-  const { setUser } = useContext(UserContext);
+function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -79,8 +77,6 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
     getMessages();
   }, [post]);
 
-  console.log(messages);
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -115,10 +111,7 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
       );
 
       const data = await response.json();
-      setUser((user) => ({
-        ...user,
-        posts: [data, ...user.posts.filter((p) => p.id !== post.id)],
-      }));
+      setPosts((posts) => [data, ...posts.filter((p) => p.id !== data.id)]);
 
       toast({
         title: "Successfully edited post!",

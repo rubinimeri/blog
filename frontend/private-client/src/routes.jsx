@@ -7,7 +7,7 @@ const routes = [
     element: <AuthPage />,
   },
   {
-    path: "/admin",
+    path: "/admin/:page",
     element: <Admin />,
   },
 ];

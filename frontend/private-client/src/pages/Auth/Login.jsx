@@ -63,7 +63,7 @@ function Login() {
 
       const jwt = await response.json();
       localStorage.setItem("token", jwt.token);
-      window.location.assign("/admin");
+      window.location.assign("/admin/1");
     } catch (error) {
       console.error(error);
       setError(error.message);

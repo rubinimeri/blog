@@ -16,8 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Editor } from "@tinymce/tinymce-react";
 import fileToBase64 from "@/utils/fileToBase64.js";
-import { useContext, useState } from "react";
-import { UserContext } from "@/UserProvider.jsx";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast.js";
 import { Loader2 } from "lucide-react";
 
@@ -28,8 +27,7 @@ const formSchema = z.object({
   isPublished: z.boolean().optional(),
 });
 
-function CreatePostForm({ username = "rubinimeri", switchTab }) {
-  const { setUser } = useContext(UserContext);
+function CreatePostForm({ setPosts, username, switchTab }) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -69,7 +67,7 @@ function CreatePostForm({ username = "rubinimeri", switchTab }) {
       }
 
       const post = await response.json();
-      setUser((user) => ({ ...user, posts: [post, ...user.posts] }));
+      setPosts((posts) => [post, ...posts]);
 
       toast({
         title: "Successfully created post!",
