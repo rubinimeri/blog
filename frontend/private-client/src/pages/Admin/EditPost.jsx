@@ -30,11 +30,12 @@ import fileToBase64 from "@/utils/fileToBase64.js";
 import { Checkbox } from "@/components/ui/checkbox.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import * as z from "zod";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/UserProvider.jsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Comment from "@/pages/Admin/Comment.jsx";
+import { useToast } from "@/hooks/use-toast.js";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
@@ -44,8 +45,36 @@ const formSchema = z.object({
 });
 
 function EditPost({ post, setActiveTab, setSelectedPost }) {
-  const { setUser } = useContext(UserContext);
+  const { toast } = useToast();
   const [error, setError] = useState(null);
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/posts/${post.id}/messages?sortValue=asc`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `bearer ${token}`,
+              "Content-type": "application/json",
+            },
+          },
+        );
+
+        const data = await response.json();
+        setMessages(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getMessages();
+  }, [post]);
+
+  console.log(messages);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -108,7 +137,13 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
       );
 
       const data = await response.json();
-      console.log(data);
+
+      setMessages(messages.filter((message) => message.id !== data.id));
+
+      toast({
+        title: "Message successfully deleted!",
+        description: `Username: ${data.username}`,
+      });
     } catch (err) {
       console.error("Error deleting post: ", err.message);
     }
@@ -282,12 +317,12 @@ function EditPost({ post, setActiveTab, setSelectedPost }) {
             </FormItem>
           )}
         />
-        {post.messages && (
+        {messages && (
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>Comments</AccordionTrigger>
               <AccordionContent>
-                {post.messages.map((message) => (
+                {messages.map((message) => (
                   <Comment
                     key={message.id}
                     {...message}

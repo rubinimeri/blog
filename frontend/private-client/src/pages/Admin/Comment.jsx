@@ -1,5 +1,5 @@
 import convertTimestamp from "@/utils/convertTimestamp.js";
-import { Heart, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import {
   Avatar,
   AvatarFallback,
