@@ -19,10 +19,17 @@ import fileToBase64 from "@/utils/fileToBase64.js";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast.js";
 import { Loader2 } from "lucide-react";
+import sanitizeField from "@/utils/sanitize.js";
 
 const formSchema = z.object({
-  title: z.string().min(2, "Title must be at least 2 characters"),
-  content: z.string().min(2, "Content must be at least 10 characters"),
+  title: z
+    .string()
+    .min(2, "Title must be at least 2 characters")
+    .transform(sanitizeField),
+  content: z
+    .string()
+    .min(2, "Content must be at least 10 characters")
+    .transform(sanitizeField),
   thumbnail: z.string(),
   isPublished: z.boolean().optional(),
 });
@@ -43,6 +50,7 @@ function CreatePostForm({ setPosts, username, switchTab }) {
 
   async function onSubmit(values) {
     try {
+      console.log(values);
       setLoading(true);
       const { title, content, thumbnail, isPublished } = values;
       console.log(values);

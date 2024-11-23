@@ -9,7 +9,6 @@ const validateSignUp = [
     body("username")
         .trim()
         .notEmpty().withMessage(`Username ${isRequired}`)
-        .isAlpha().withMessage(`Username ${isAlpha}`)
         .isLength({ min: 2 }).withMessage(`Username ${minCharacters(2)}`)
         .escape(),
     body("email")
@@ -48,7 +47,6 @@ const validateMessage = [
         .trim()
         .notEmpty().withMessage(`Username ${isRequired}`)
         .isLength({ min: 2 }).withMessage(`Username ${minCharacters(2)}`)
-        .isAlpha().withMessage(`Username ${isAlpha}`)
         .escape(),
     body("content")
         .trim()
