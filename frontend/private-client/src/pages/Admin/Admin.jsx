@@ -65,7 +65,7 @@ function Admin() {
         <Tabs
           onValueChange={setActiveTab}
           value={activeTab}
-          className={`${activeTab === "posts" ? "max-w-[1200px]" : "max-w-[800px]"} mx-auto mt-8 shadow-lg dark:shadow-slate-800 transition-all duration-500 ease`}
+          className={`${activeTab === "posts" ? "max-w-[1200px]" : "max-w-[800px]"} mx-auto mt-8 shadow-lg transition-all duration-500 ease`}
         >
           <TabsList className="w-full flex">
             <TabsTrigger className="flex-1" value="posts">
