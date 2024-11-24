@@ -9,12 +9,21 @@ import {
 } from "@/components/ui/tabs.jsx";
 import { useContext } from "react";
 import { UserContext } from "@/UserProvider.jsx";
+import { Loader2 } from "lucide-react";
 
 function AuthPage() {
   const { loading, user } = useContext(UserContext);
 
-  if (loading) return <div>Loading...</div>;
-  if (user) return <div>Unauthorized!</div>;
+  if (loading)
+    return (
+      <div>
+        <Header />
+        <div className="min-h-[85vh] flex justify-center items-center">
+          <Loader2 className="animate-spin" width={50} height={50} />
+        </div>
+      </div>
+    );
+  if (user) return window.location.assign("/admin/1");
   return (
     <>
       <Header />

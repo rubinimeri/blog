@@ -51,12 +51,7 @@ function Admin() {
       </div>
     );
 
-  if (!user)
-    return (
-      <div>
-        Unauthorized! <a href="/">Login or Sign Up</a>
-      </div>
-    );
+  if (!user) return window.location.assign("/");
 
   return (
     <>
