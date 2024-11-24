@@ -4,7 +4,6 @@ import Comment from "@/pages/PostPage/Comment.jsx";
 import AddComment from "@/pages/PostPage/AddComment.jsx";
 import usePost from "@/hooks/usePost.js";
 import convertTimestamp from "@/utils/convertTimestamp.js";
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -14,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.jsx";
+import decodeHTMLEntities from "@/utils/decodeContent.js";
+import styleHtmlContent from "@/utils/styleHtmlContent.js";
 
 function Sort({ handleSortComments }) {
   return (
@@ -91,6 +92,8 @@ function PostPage() {
 
   if (error) return <div>Error!</div>;
 
+  const postHtml = styleHtmlContent(post.content);
+
   return (
     <>
       <Header />
@@ -108,19 +111,10 @@ function PostPage() {
           <img src={post.imageUrl} alt="hero image" />
         </div>
 
-        <div className="flex flex-col gap-4 max-md:px-6">
-          <h2 className="font-bold text-xl">Lorem Ipsum Dolor Sit Amet</h2>
-          <p className="text-gray-600">{post.content}</p>
-
-          <h2 className="font-bold text-xl">Lorem Ipsum Dolor Sit Amet</h2>
-          <p className="text-gray-600">{post.content}</p>
-
-          <h2 className="font-bold text-xl">Lorem Ipsum Dolor Sit Amet</h2>
-          <p className="text-gray-600">{post.content}</p>
-
-          <h2 className="font-bold text-xl">Lorem Ipsum Dolor Sit Amet</h2>
-          <p className="text-gray-600">{post.content}</p>
-        </div>
+        <div
+          className="blog-content flex flex-col gap-4 max-md:px-6"
+          dangerouslySetInnerHTML={{ __html: postHtml }}
+        />
       </main>
       <section className="flex flex-col gap-4 max-w-[800px] mx-auto px-10 py-4 bg-gray-100 rounded-xl">
         <div className="flex justify-between items-center">

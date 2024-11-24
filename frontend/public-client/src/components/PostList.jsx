@@ -1,8 +1,16 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import convertTimestamp from "@/utils/convertTimestamp.js";
+import { load } from "cheerio";
+import decodeHTMLEntities from "@/utils/decodeContent.js";
 
 function PostCard({ id, author, imageUrl, title, content, createdAt }) {
+  // Get first paragraph from content using cheerio
+  const decodedContent = decodeHTMLEntities(content);
+  const $ = load(decodedContent);
+  const firstParagraph = $("p").first().text();
+  console.log("firstParagraph", firstParagraph);
+
   return (
     <div className="flex flex-col justify-between gap-3 py-4 tracking-wider text-left">
       <img src={imageUrl} alt="post image" />
@@ -10,7 +18,7 @@ function PostCard({ id, author, imageUrl, title, content, createdAt }) {
         {author} - {convertTimestamp(createdAt)}
       </p>
       <h3 className="font-black font-serif text-2xl">{title}</h3>
-      <p className="content-hero line-clamp-4">{content}</p>
+      <p className="content-hero line-clamp-4">{firstParagraph}</p>
       <Link to={`/post/${id}`} className="link">
         Read more
       </Link>
