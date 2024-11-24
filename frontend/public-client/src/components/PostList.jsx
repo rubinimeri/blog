@@ -13,7 +13,13 @@ function PostCard({ id, author, imageUrl, title, content, createdAt }) {
 
   return (
     <div className="flex flex-col justify-between gap-3 py-4 tracking-wider text-left">
-      <img src={imageUrl} alt="post image" />
+      <div className="aspect-[16-10] flex items-center justify-center overflow-hidden">
+        <img
+          src={imageUrl}
+          alt="post image"
+          className="shrink-0 min-w-full min-h-full"
+        />
+      </div>
       <p className="author">
         {author} - {convertTimestamp(createdAt)}
       </p>

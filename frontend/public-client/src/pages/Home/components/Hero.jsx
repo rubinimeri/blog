@@ -1,6 +1,9 @@
 import PostList from "@/components/PostList.jsx";
 import usePosts from "@/hooks/usePosts.js";
 import { Link } from "react-router-dom";
+import { load } from "cheerio";
+import decodeHTMLEntities from "@/utils/decodeContent.js";
+import convertTimestamp from "@/utils/convertTimestamp.js";
 
 export default function Hero() {
   const { loading, error, posts } = usePosts();
@@ -10,6 +13,11 @@ export default function Hero() {
   if (loading) return <div>Loading...</div>;
 
   if (error) return <div>Error!</div>;
+
+  const mainPost = posts[5];
+  const decodedContent = decodeHTMLEntities(mainPost.content);
+  const $ = load(decodedContent);
+  const firstParagraph = $("p").first().text();
 
   return (
     <main className="max-sm:mx-0 text-center max-w-[1200px] mx-auto">
@@ -28,23 +36,22 @@ export default function Hero() {
         <div className="flex-1">
           <img
             className="md:rounded-[30px] "
-            src="/hero-img-placeholder.jpg"
+            src={mainPost.imageUrl}
             alt="hero image"
           />
         </div>
         <div className="min-h-full flex flex-col justify-between gap-5 flex-1 max-md:gap-3 max-md:p-6 max-md:max-w-md max-md:mx-auto tracking-wider">
-          <p className="author">rubinimeri - 8 minutes ago</p>
+          <p className="author">
+            {`${mainPost.author.username} - ${convertTimestamp(mainPost.createdAt)}`}
+          </p>
           <h1 className="font-serif font-black max-lg:text-4xl max-sm:text-[34px]">
-            Walking as a Form of Meditation
+            {mainPost.title}
           </h1>
           <p className="content-hero text-left lg:tracking-wider max-w-md">
-            Reflect on how a walk in nature can become a mindful experience,
-            sharpening the senses and grounding us in the present. Highlight the
-            rustling of leaves, the feel of a breeze, and the chorus of bird
-            songs as simple yet profound experiences that elevate walking..
+            {firstParagraph}
           </p>
           <p>
-            <a className="link" href="#">
+            <a className="link" href={`/post/${mainPost.id}`}>
               Read more
             </a>
           </p>
