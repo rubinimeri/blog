@@ -47,6 +47,11 @@ const formSchema = z.object({
   isPublished: z.boolean().optional(),
 });
 
+const decodeHTMLEntities = (html) => {
+  const parser = new DOMParser();
+  return parser.parseFromString(html, "text/html").body.textContent;
+};
+
 function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -88,7 +93,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: post.title,
-      content: post.content,
+      content: decodeHTMLEntities(post.content),
       thumbnail: post.imageUrl,
       isPublished: post.isPublished,
     },
@@ -220,9 +225,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
                       "advcode",
                       "editimage",
                       "advtemplate",
-                      "ai",
                       "mentions",
-                      "tinycomments",
                       "tableofcontents",
                       "footnotes",
                       "mergetags",
@@ -237,15 +240,10 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
                     toolbar:
                       "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
                     tinycomments_mode: "embedded",
-                    tinycomments_author: `${post.author}`,
                     mergetags_list: [
                       { value: "First.Name", title: "First Name" },
                       { value: "Email", title: "Email" },
                     ],
-                    ai_request: (request, respondWith) =>
-                      respondWith.string(() =>
-                        Promise.reject("See docs to implement AI Assistant"),
-                      ),
                     exportpdf_converter_options: {
                       format: "Letter",
                       margin_top: "1in",
@@ -264,7 +262,6 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
                       },
                     },
                   }}
-                  initialValue={field.value}
                 />
               </FormControl>
               <FormMessage />
