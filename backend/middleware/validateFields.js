@@ -1,7 +1,7 @@
 import { body } from "express-validator";
+import DOMPurify from "dompurify";
 
 const isRequired = 'is required';
-const isAlpha = 'must only contain letters';
 const minCharacters = (c) => `must have at least ${c} characters`;
 
 
@@ -59,7 +59,7 @@ const validatePost = [
         .trim()
         .notEmpty().withMessage(`Title ${isRequired}`)
         .isLength({ min: 2 }).withMessage(`Title ${minCharacters(2)}`)
-        .escape(),
+        .custom((value, { req }) => DOMPurify.sanitize(value)),
     body("content")
         .trim()
         .isLength({ min: 2 }).withMessage(`Content ${minCharacters(2)}`)
