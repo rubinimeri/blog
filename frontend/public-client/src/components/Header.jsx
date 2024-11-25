@@ -17,7 +17,11 @@ function MobileMenu() {
           <NavigationMenuContent className={""}>
             <ul className={"flex flex-col gap-4 p-2 w-max underline border-2"}>
               <li>
-                <NavigationMenuLink className="link cursor-pointer">
+                <NavigationMenuLink
+                  className="link cursor-pointer"
+                  href="https://private-blog-rubinimeris-projects.vercel.app/"
+                  target="_blank"
+                >
                   Admin
                 </NavigationMenuLink>
               </li>
@@ -63,7 +67,11 @@ const Header = () => {
         </Link>
       </div>
       <nav className="hidden md:flex gap-16 underline ">
-        <a href="#" className="text-blue-500">
+        <a
+          href="https://private-blog-rubinimeris-projects.vercel.app/"
+          target="_blank"
+          className="text-blue-500"
+        >
           Admin
         </a>
         <Link to="/all-posts/1" className="text-blue-500">

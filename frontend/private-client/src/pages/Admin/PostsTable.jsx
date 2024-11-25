@@ -9,16 +9,23 @@ import {
 } from "@/components/ui/table";
 import convertTimestamp from "@/utils/convertTimestamp.js";
 import { Switch } from "@/components/ui/switch.jsx";
-import { SquarePen, Trash2 } from "lucide-react";
+import { Loader2, SquarePen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
 import { useToast } from "@/hooks/use-toast.js";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
   const { toast } = useToast();
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function handleDelete(e) {
     try {
+      setLoading(true);
       const { id } = e.target;
+      setSelectedPostId(id);
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -37,18 +44,20 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
 
       const data = await response.json();
 
-      setTimeout(() => window.location.reload(), 1000);
-
       toast({
         title: "Successfully deleted post!",
         description: `Title: ${data.title}`,
       });
+      navigate(0);
     } catch (error) {
       console.error("Error deleting post", error);
       toast({
         title: "Post deletion failed!",
         description: error.message,
       });
+    } finally {
+      setLoading(false);
+      setSelectedPostId(null);
     }
   }
 
@@ -151,7 +160,11 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
                   id={post.id}
                   onClick={handleDelete}
                 >
-                  <Trash2 />
+                  {loading && selectedPostId === post.id ? (
+                    <Loader2 className="animate-spin" width={20} height={20} />
+                  ) : (
+                    <Trash2 />
+                  )}
                 </Button>
               </TableCell>
             </TableRow>

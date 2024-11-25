@@ -25,6 +25,13 @@ function Header({ user }) {
         width={200}
       />
       <div className="flex items-center gap-3">
+        <a
+          href="https://public-blog-ochre.vercel.app/"
+          target="_blank"
+          className="text-primary text-sm font-bold underline hover:no-underline"
+        >
+          Blog
+        </a>
         {user && (
           <>
             <p>{user.username}</p>
