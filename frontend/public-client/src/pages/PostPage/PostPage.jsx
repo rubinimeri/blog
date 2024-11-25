@@ -13,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.jsx";
-import decodeHTMLEntities from "@/utils/decodeContent.js";
 import styleHtmlContent from "@/utils/styleHtmlContent.js";
+import { Loader2 } from "lucide-react";
 
 function Sort({ handleSortComments }) {
   return (
@@ -36,7 +36,6 @@ function PostPage() {
   const { error, loading, post, setPost } = usePost(postId);
 
   function handleAddComment(username, content) {
-    console.log(username, content);
     fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages`, {
       method: "POST",
       headers: {
@@ -88,7 +87,14 @@ function PostPage() {
       .then((data) => setPost({ ...post, messages: data }));
   }
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>
+        <div className="min-h-[90vh] flex justify-center items-center">
+          <Loader2 className="animate-spin" width={50} height={50} />
+        </div>
+      </div>
+    );
 
   if (error) return <div>Error!</div>;
 

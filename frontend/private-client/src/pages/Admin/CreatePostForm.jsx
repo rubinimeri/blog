@@ -51,10 +51,8 @@ function CreatePostForm({ setPosts, username, switchTab }) {
 
   async function onSubmit(values) {
     try {
-      console.log(values);
       setLoading(true);
       const { title, content, thumbnail, isPublished } = values;
-      console.log(values);
       const token = localStorage.getItem("token");
 
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/posts`, {

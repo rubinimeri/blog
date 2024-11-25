@@ -4,17 +4,27 @@ import { Link } from "react-router-dom";
 import { load } from "cheerio";
 import decodeHTMLEntities from "@/utils/decodeContent.js";
 import convertTimestamp from "@/utils/convertTimestamp.js";
+import { Loader2 } from "lucide-react";
 
 export default function Hero() {
   const { loading, error, posts } = usePosts();
 
-  console.log(posts);
-
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>
+        <div className="min-h-[90vh] flex justify-center items-center">
+          <Loader2 className="animate-spin" width={50} height={50} />
+        </div>
+      </div>
+    );
 
   if (error) return <div>Error!</div>;
 
-  const mainPost = posts[5];
+  if (posts.length === 0) {
+    return <h1>Nothing to see here</h1>;
+  }
+
+  const mainPost = posts[0];
   const decodedContent = decodeHTMLEntities(mainPost.content);
   const $ = load(decodedContent);
   const firstParagraph = $("p").first().text();

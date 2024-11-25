@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button.jsx";
 import usePosts from "@/hooks/usePosts.js";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 function Pages({ metadata }) {
   const { currentPage, totalPages } = metadata;
@@ -102,7 +103,14 @@ function AllPosts() {
     search,
   );
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>
+        <div className="min-h-[90vh] flex justify-center items-center">
+          <Loader2 className="animate-spin" width={50} height={50} />
+        </div>
+      </div>
+    );
 
   if (error) return <div>Error!</div>;
 
