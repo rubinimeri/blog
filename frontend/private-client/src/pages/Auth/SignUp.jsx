@@ -20,6 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.jsx";
+import { useNavigate } from "react-router-dom";
 
 const signUpSchema = z
   .object({
@@ -38,6 +39,7 @@ const signUpSchema = z
   });
 
 function SignUp() {
+  const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -69,7 +71,7 @@ function SignUp() {
       );
       const jwt = await response.json();
       localStorage.setItem("token", jwt.token);
-      window.location.assign("/admin/1");
+      navigate("/admin/1");
     } catch (error) {
       console.error(error);
     }

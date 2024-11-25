@@ -1,11 +1,13 @@
 import { ModeToggle } from "@/components/mode-toggle.jsx";
 import PropTypes from "prop-types";
 import { Button } from "@/components/ui/button.jsx";
+import { useNavigate } from "react-router-dom";
 
 function Header({ user }) {
+  const navigate = useNavigate();
   function handleLogout() {
     localStorage.removeItem("token");
-    window.location.assign("/");
+    navigate("/");
   }
 
   return (

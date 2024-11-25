@@ -21,12 +21,13 @@ import EditPost from "@/pages/Admin/EditPost.jsx";
 import { Loader2 } from "lucide-react";
 import usePosts from "@/hooks/usePosts.js";
 import Pages from "@/pages/Admin/Pages.jsx";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Sort from "@/pages/Admin/Sort.jsx";
 import { Input } from "@/components/ui/input.jsx";
 import { Button } from "@/components/ui/button.jsx";
 
 function Admin() {
+  const navigate = useNavigate();
   const { page } = useParams();
   const [sortValue, setSortValue] = useState("createdAt");
   const [order, setOrder] = useState("asc");
@@ -51,7 +52,7 @@ function Admin() {
       </div>
     );
 
-  if (!user) return window.location.assign("/");
+  if (!user) return navigate("/");
 
   return (
     <>
