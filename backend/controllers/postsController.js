@@ -120,7 +120,7 @@ const postsProtectedGet = asyncHandler(async (req, res) => {
         orderBy = { [sort]: order };
     }
 
-    const totalPosts = await prisma.post.count()
+    const totalPosts = await prisma.post.count({ where: { authorId: user.id } })
 
     const posts = await prisma.post.findMany({
         where: {
