@@ -96,6 +96,7 @@ const postsProtectedGet = asyncHandler(async (req, res) => {
         order = 'desc',
         search = ''
     } = req.query;
+    const { user } = req;
 
     const validSortFields = ['createdAt', 'title', 'messages'];
     const validOrderValues = ['asc', 'desc'];
@@ -126,7 +127,8 @@ const postsProtectedGet = asyncHandler(async (req, res) => {
             title: {
                 contains: search,
                 mode: 'insensitive'
-            }
+            },
+            authorId: user.id,
         },
         orderBy,
         skip,
