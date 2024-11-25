@@ -72,6 +72,38 @@ function Login() {
     }
   }
 
+  async function handleGuestLogin(e) {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const email = "guest@gmail.com";
+      const password = "12345";
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        },
+      );
+
+      const jwt = await response.json();
+      localStorage.setItem("token", jwt.token);
+      window.location.assign("/admin/1");
+    } catch (err) {
+      console.error(err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <>
       <Card>
@@ -81,7 +113,7 @@ function Login() {
               <CardTitle>Login</CardTitle>
               <CardDescription>Login to existing account here.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-3 pb-3">
               <FormField
                 control={form.control}
                 name="email"
@@ -109,6 +141,13 @@ function Login() {
                   </FormItem>
                 )}
               />
+              <Button
+                variant="link"
+                className="pl-0 underline hover:no-underline mb-0 opacity-70"
+                onClick={handleGuestLogin}
+              >
+                Login to guest account
+              </Button>
             </CardContent>
             <CardFooter>
               <Button className="w-full" type="submit">
