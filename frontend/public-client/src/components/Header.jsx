@@ -22,12 +22,9 @@ function MobileMenu() {
                 </NavigationMenuLink>
               </li>
               <li>
-                <NavigationMenuLink
-                  className="link cursor-pointer"
-                  href="/all-posts/1"
-                >
+                <Link className="link cursor-pointer" to="/all-posts/1">
                   All Posts
-                </NavigationMenuLink>
+                </Link>
               </li>
               <li>
                 <NavigationMenuLink

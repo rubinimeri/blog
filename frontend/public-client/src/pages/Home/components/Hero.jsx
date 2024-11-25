@@ -61,9 +61,9 @@ export default function Hero() {
             {firstParagraph}
           </p>
           <p>
-            <a className="link" href={`/post/${mainPost.id}`}>
+            <Link className="link" to={`/post/${mainPost.id}`}>
               Read more
-            </a>
+            </Link>
           </p>
         </div>
       </section>
