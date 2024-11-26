@@ -1,8 +1,16 @@
+import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast.js";
+import { Loader2 } from "lucide-react";
 import * as z from "zod";
+import fileToBase64 from "@/utils/fileToBase64.js";
+import sanitizeField from "@/utils/sanitize.js";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -12,15 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Editor } from "@tinymce/tinymce-react";
-import fileToBase64 from "@/utils/fileToBase64.js";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast.js";
-import { Loader2 } from "lucide-react";
-import sanitizeField from "@/utils/sanitize.js";
-import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
 
 const formSchema = z.object({
   title: z
@@ -31,11 +30,24 @@ const formSchema = z.object({
     .string()
     .min(2, "Content must be at least 10 characters")
     .transform(sanitizeField),
-  thumbnail: z.string(),
+  thumbnail: z
+    .instanceof(FileList)
+    .refine((files) => files.length > 0, { message: "File is required" })
+    .refine(
+      (files) => files[0]?.size <= 5 * 1024 * 1024, // 5MB limit
+      { message: "File size should not exceed 5MB" },
+    )
+    .refine(
+      (files) =>
+        ["image/jpeg", "image/png", "image/webp"].includes(files[0]?.type),
+      {
+        message: "Only JPG or PNG files are allowed",
+      },
+    ),
   isPublished: z.boolean().optional(),
 });
 
-function CreatePostForm({ setPosts, username, switchTab }) {
+function CreatePostForm({ setPosts, switchTab }) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -44,7 +56,6 @@ function CreatePostForm({ setPosts, username, switchTab }) {
     defaultValues: {
       title: "",
       content: "",
-      thumbnail: "",
       isPublished: false,
     },
   });
@@ -52,8 +63,14 @@ function CreatePostForm({ setPosts, username, switchTab }) {
   async function onSubmit(values) {
     try {
       setLoading(true);
-      const { title, content, thumbnail, isPublished } = values;
       const token = localStorage.getItem("token");
+
+      const formData = new FormData();
+
+      formData.append("title", values.title);
+      formData.append("content", values.content);
+      formData.append("imageUrl", values.thumbnail[0]);
+      formData.append("isPublished", values.isPublished ? "true" : "false");
 
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/posts`, {
         method: "POST",
@@ -61,12 +78,7 @@ function CreatePostForm({ setPosts, username, switchTab }) {
           Authorization: `bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title,
-          content,
-          imageUrl: thumbnail,
-          isPublished: isPublished ? "true" : "false",
-        }),
+        body: formData,
       });
 
       if (!response.ok) {
