@@ -4,6 +4,7 @@ const usePosts = (sortValue = "createdAt", order = "asc", search = "") => {
   const [posts, setPosts] = useState(null);
   const [postsLoading, setPostsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token = localStorage.getItem("token");
 
   const queries = new URLSearchParams({
     sortValue,
@@ -12,8 +13,11 @@ const usePosts = (sortValue = "createdAt", order = "asc", search = "") => {
   }).toString();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts?${queries}`, {
+    fetch(`${import.meta.env.VITE_BASE_URL}/posts/all?${queries}`, {
       method: "GET",
+      headers: {
+        Authorization: `bearer ${token}`,
+      },
     })
       .then((res) => res.json())
       .then((data) => setPosts(data))
