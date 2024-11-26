@@ -96,12 +96,7 @@ function AllPosts() {
   const [sortValue, setSortValue] = useState("createdAt");
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState("");
-  const { error, loading, posts, metadata } = usePosts(
-    pageNumber,
-    sortValue,
-    order,
-    search,
-  );
+  const { error, loading, posts } = usePosts(sortValue, order, search);
 
   if (loading)
     return (
@@ -113,6 +108,18 @@ function AllPosts() {
     );
 
   if (error) return <div>Error!</div>;
+
+  const pageSize = 6;
+  const currentPage = Math.max(1, Number(pageNumber));
+  const skip = (pageNumber - 1) * pageSize;
+  const totalPages = Math.ceil(posts.length / pageSize);
+
+  const metadata = {
+    currentPage,
+    totalPages,
+  };
+
+  const paginatedPosts = posts.slice(skip, skip + pageSize);
 
   return (
     <>
@@ -139,7 +146,7 @@ function AllPosts() {
           </div>
         </div>
         <div className="flex flex-col justify-between min-h-screen">
-          <PostList posts={posts} />
+          <PostList posts={paginatedPosts} />
           <Pages metadata={metadata} />
         </div>
       </main>

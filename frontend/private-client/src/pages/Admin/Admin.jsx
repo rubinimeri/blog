@@ -32,17 +32,12 @@ function Admin() {
   const [sortValue, setSortValue] = useState("createdAt");
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState("");
-  const { posts, setPosts, metadata } = usePosts(
-    page,
-    sortValue,
-    order,
-    search,
-  );
+  const { postsLoading, posts, setPosts } = usePosts(sortValue, order, search);
   const { loading, user, setUser } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("posts");
   const [selectedPost, setSelectedPost] = useState(null);
 
-  if (loading)
+  if (loading || postsLoading)
     return (
       <div>
         <Header />
@@ -53,6 +48,18 @@ function Admin() {
     );
 
   if (!user) return navigate("/");
+
+  const pageSize = 6;
+  const currentPage = Math.max(1, Number(page));
+  const skip = (page - 1) * pageSize;
+  const totalPages = Math.ceil(posts.length / pageSize);
+
+  const metadata = {
+    currentPage,
+    totalPages,
+  };
+
+  const paginatedPosts = posts.slice(skip, skip + pageSize);
 
   return (
     <>
@@ -103,7 +110,7 @@ function Admin() {
                 <PostsTable
                   switchTab={setActiveTab}
                   setSelectedPost={setSelectedPost}
-                  posts={posts}
+                  posts={paginatedPosts}
                   setPosts={setPosts}
                   author={user.username}
                 />

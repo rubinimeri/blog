@@ -1,42 +1,27 @@
 import { useEffect, useState } from "react";
 
-const usePosts = (
-  pageNumber = 1,
-  sortValue = "createdAt",
-  order = "asc",
-  search = "",
-) => {
+const usePosts = (sortValue = "createdAt", order = "asc", search = "") => {
   const [posts, setPosts] = useState(null);
-  const [metadata, setMetadata] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [postsLoading, setPostsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
 
   const queries = new URLSearchParams({
-    page: pageNumber,
-    sort: sortValue,
+    sortValue,
     order,
     search,
   }).toString();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts/all?${queries}`, {
+    fetch(`${import.meta.env.VITE_BASE_URL}/posts?${queries}`, {
       method: "GET",
-      headers: {
-        Authorization: `bearer ${token}`,
-      },
     })
       .then((res) => res.json())
-      .then((data) => {
-        const { posts, metadata } = data;
-        setPosts(posts);
-        setMetadata(metadata);
-      })
+      .then((data) => setPosts(data))
       .catch((error) => setError(error))
-      .finally(() => setLoading(false));
+      .finally(() => setPostsLoading(false));
   }, [queries]);
 
-  return { loading, error, posts, setPosts, metadata };
+  return { postsLoading, error, posts, setPosts };
 };
 
 export default usePosts;

@@ -24,16 +24,16 @@ function Pages({ metadata }) {
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href={prevPageUrl} />
+          <PaginationPrevious to={prevPageUrl} />
         </PaginationItem>
         {Array.apply(null, Array(totalPages)).map((val, index) => (
           <PaginationItem key={index}>
             {currentPage === index + 1 ? (
-              <PaginationLink href={`/admin/${index + 1}`} isActive>
+              <PaginationLink to={`/admin/${index + 1}`} isActive>
                 {index + 1}
               </PaginationLink>
             ) : (
-              <PaginationLink href={`/admin/${index + 1}`}>
+              <PaginationLink to={`/admin/${index + 1}`}>
                 {index + 1}
               </PaginationLink>
             )}
