@@ -1,6 +1,8 @@
-import prisma from '../prisma/prismaClient.js'
-import asyncHandler from 'express-async-handler'
+import prisma from '../prisma/prismaClient.js';
+import asyncHandler from 'express-async-handler';
 import CustomError from "../utils/customError.js";
+import cloudinary from '../utils/cloudinaryConfig.js';
+import upload from '../middleware/multerConfig.js';
 
 const postsGet =  asyncHandler(async (req, res) => {
     const {
@@ -77,24 +79,37 @@ const postGet =  asyncHandler(async (req, res) => {
 
 
 
-const postsCreatePost =  asyncHandler(async (req, res) => {
+const postsCreatePost = asyncHandler(async (req, res) => {
     const user = req.user;
 
-    const { title, content, imageUrl, isPublished } = req.body;
+    const { title, content, isPublished } = req.body;
     if (!title || !content) {
         throw new CustomError("Title and content are required", 400);
     }
 
-    const post = await prisma.post.create({
+    const { file } = req;
+    if (!file) {
+        throw new CustomError("Image is required", 400);
+    }
+
+    await cloudinary.uploader.upload(file.path, async (err, result) => {
+        if (err) {
+            throw new CustomError(err.message, err.statusCode);
+        }
+
+        const post = await prisma.post.create({
             data: {
                 title,
                 content,
-                imageUrl,
+                imageUrl: result.url,
                 authorId: user.id,
+                cloudinaryId: result.public_id,
                 isPublished: Boolean(isPublished === "true"),
-            },
+            }
+        })
+
+        return res.status(200).json(post);
     })
-    return res.status(200).json(post);
 })
 
 const postsUpdatePut=  asyncHandler(async (req, res) => {

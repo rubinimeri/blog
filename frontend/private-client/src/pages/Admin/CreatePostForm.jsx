@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast.js";
 import { Loader2 } from "lucide-react";
 import * as z from "zod";
-import fileToBase64 from "@/utils/fileToBase64.js";
 import sanitizeField from "@/utils/sanitize.js";
 
 import { Button } from "@/components/ui/button";
@@ -30,19 +29,15 @@ const formSchema = z.object({
     .string()
     .min(2, "Content must be at least 10 characters")
     .transform(sanitizeField),
-  thumbnail: z
+  file: z
     .instanceof(FileList)
-    .refine((files) => files.length > 0, { message: "File is required" })
-    .refine(
-      (files) => files[0]?.size <= 5 * 1024 * 1024, // 5MB limit
-      { message: "File size should not exceed 5MB" },
-    )
+    .refine((files) => files.length > 0, {
+      message: "At least one file is required",
+    })
     .refine(
       (files) =>
-        ["image/jpeg", "image/png", "image/webp"].includes(files[0]?.type),
-      {
-        message: "Only JPG or PNG files are allowed",
-      },
+        Array.from(files).every((file) => file.size <= 5 * 1024 * 1024),
+      { message: "Each file must not exceed 5MB" },
     ),
   isPublished: z.boolean().optional(),
 });
@@ -69,14 +64,13 @@ function CreatePostForm({ setPosts, switchTab }) {
 
       formData.append("title", values.title);
       formData.append("content", values.content);
-      formData.append("imageUrl", values.thumbnail[0]);
+      formData.append("file", values.file[0]);
       formData.append("isPublished", values.isPublished ? "true" : "false");
 
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/posts`, {
         method: "POST",
         headers: {
           Authorization: `bearer ${token}`,
-          "Content-Type": "application/json",
         },
         body: formData,
       });
@@ -86,6 +80,7 @@ function CreatePostForm({ setPosts, switchTab }) {
       }
 
       const post = await response.json();
+      console.log(post);
       setPosts((posts) => [post, ...posts]);
 
       toast({
@@ -135,17 +130,14 @@ function CreatePostForm({ setPosts, switchTab }) {
         />
         <FormField
           control={form.control}
-          name="thumbnail"
+          name="file"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Thumbnail</FormLabel>
               <FormControl>
                 <Input
                   type="file"
-                  onChange={async (e) => {
-                    const file = await fileToBase64(e.target.files?.[0]); // Get the selected file
-                    field.onChange(file); // Manually update React Hook Form
-                  }}
+                  onChange={(e) => form.setValue("file", e.target.files)}
                 />
               </FormControl>
               <FormDescription>Select an image to upload.</FormDescription>
