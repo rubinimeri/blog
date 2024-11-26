@@ -10,6 +10,8 @@ const postsGet =  asyncHandler(async (req, res) => {
         search = ''
     } = req.query;
 
+    const { user } = req;
+
     const validSortFields = ['createdAt', 'title', 'messages'];
     const validOrderValues = ['asc', 'desc'];
 
@@ -19,6 +21,17 @@ const postsGet =  asyncHandler(async (req, res) => {
 
     if (!validOrderValues.includes(order)) {
         throw new CustomError(`Invalid order value: ${order}`, 400);
+    }
+
+    const where = {
+        title: {
+            contains: search,
+            mode: 'insensitive'
+        },
+        ...(user
+            ? { authorId: user.id }
+            : { isPublished: true }
+        )
     }
 
     const pageSize = 6;
@@ -32,21 +45,10 @@ const postsGet =  asyncHandler(async (req, res) => {
         orderBy = { [sort]: order };
     }
 
-    const totalPosts = await prisma.post.count({
-        where: {
-            isPublished: true
-        }
-    })
+    const totalPosts = await prisma.post.count({ where })
 
     const posts = await prisma.post.findMany({
-        where: {
-            isPublished: true,
-            title: {
-                contains: search,
-                mode: 'insensitive'
-            }
-
-        },
+        where,
         orderBy,
         skip,
         take: pageSize,
@@ -56,6 +58,7 @@ const postsGet =  asyncHandler(async (req, res) => {
                     username: true,
                 }
             },
+            ...(user && { messages: true })
         }
     });
     return res.status(200).json({

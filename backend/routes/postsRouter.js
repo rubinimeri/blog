@@ -6,7 +6,7 @@ import {validatePost} from "../middleware/validateFields.js";
 const postsRouter = Router();
 
 postsRouter.get('/', postsController.postsGet);
-postsRouter.get('/all', jwtAuthenticate, postsController.postsProtectedGet)
+postsRouter.get('/all', jwtAuthenticate, postsController.postsGet)
 postsRouter.get('/:postId', postsController.postGet);
 
 postsRouter.use(jwtAuthenticate)
