@@ -4,14 +4,12 @@ import CustomError from "../utils/customError.js";
 
 const postsGet =  asyncHandler(async (req, res) => {
     const {
-        page = 1,
         sort = 'createdAt',
         order = 'desc',
         search = ''
     } = req.query;
 
     const { user } = req;
-
     const validSortFields = ['createdAt', 'title', 'messages'];
     const validOrderValues = ['asc', 'desc'];
 
@@ -34,10 +32,6 @@ const postsGet =  asyncHandler(async (req, res) => {
         )
     }
 
-    const pageSize = 6;
-    const currentPage = Math.max(1, Number(page));
-    const skip = (currentPage - 1) * pageSize;
-
     let orderBy;
     if (sort === 'messages') {
         orderBy = { [sort]: { _count: order } };
@@ -45,13 +39,9 @@ const postsGet =  asyncHandler(async (req, res) => {
         orderBy = { [sort]: order };
     }
 
-    const totalPosts = await prisma.post.count({ where })
-
     const posts = await prisma.post.findMany({
         where,
         orderBy,
-        skip,
-        take: pageSize,
         include: {
             author: {
                 select: {
@@ -61,14 +51,7 @@ const postsGet =  asyncHandler(async (req, res) => {
             ...(user && { messages: true })
         }
     });
-    return res.status(200).json({
-        metadata: {
-            totalPosts,
-            currentPage,
-            totalPages: Math.ceil(totalPosts / pageSize),
-        },
-        posts
-    });
+    return res.status(200).json(posts);
 })
 
 const postGet =  asyncHandler(async (req, res) => {
