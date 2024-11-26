@@ -51,16 +51,16 @@ function PostPage() {
       .then((data) => setPost({ ...post, messages: [...post.messages, data] }));
   }
 
-  function handleLikeUnlikeComment(messageId, operation = "like") {
+  function handleLikeUnlikeComment(messageId, liked = "true") {
     fetch(
-      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages/${operation}`,
+      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages/${messageId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          messageId,
+          liked,
         }),
       },
     )
