@@ -52,8 +52,8 @@ const messageCreatePost =  asyncHandler(async (req, res) => {
 })
 
 const messageLikePut =  asyncHandler(async (req, res) => {
-    const { postId } = req.params;
-    const { messageId } = req.body;
+    const { postId, messageId } = req.params;
+    const { liked } = req.body;
 
     const findMessage = await prisma.message.findUnique({
         where: { postId, id: messageId },
@@ -62,24 +62,7 @@ const messageLikePut =  asyncHandler(async (req, res) => {
     const newMessage = await prisma.message.update({
         where: { postId, id: messageId },
         data: {
-            likes: findMessage.likes + 1
-        }
-    })
-    return res.status(200).json(newMessage);
-})
-
-const messageUnlikePut =  asyncHandler(async (req, res) => {
-    const { postId } = req.params;
-    const { messageId } = req.body;
-
-    const findMessage = await prisma.message.findUnique({
-        where: { postId, id: messageId },
-    })
-
-    const newMessage = await prisma.message.update({
-        where: { postId, id: messageId },
-        data: {
-            likes: findMessage.likes - 1
+            likes: liked === "true" ? findMessage.likes + 1 : findMessage.likes - 1
         }
     })
     return res.status(200).json(newMessage);
@@ -97,6 +80,5 @@ export default {
     messagesGet,
     messageCreatePost,
     messageLikePut,
-    messageUnlikePut,
     messageDelete
 }
