@@ -2,7 +2,6 @@ import * as z from "zod";
 import Comment from "@/pages/Admin/Comment.jsx";
 import sanitizeField from "@/utils/sanitize.js";
 import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
-import fileToBase64 from "@/utils/fileToBase64.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

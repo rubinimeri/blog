@@ -12,19 +12,18 @@ import { Switch } from "@/components/ui/switch.jsx";
 import { Loader2, SquarePen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
 import { useToast } from "@/hooks/use-toast.js";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
   const { toast } = useToast();
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   async function handleDelete(e) {
     try {
       setLoading(true);
       const { id } = e.target;
+      setPosts(posts.filter((post) => post.id !== id));
       setSelectedPostId(id);
       const token = localStorage.getItem("token");
 
@@ -48,7 +47,6 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
         title: "Successfully deleted post!",
         description: `Title: ${data.title}`,
       });
-      navigate(0);
     } catch (error) {
       console.error("Error deleting post", error);
       toast({
@@ -63,7 +61,7 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
 
   async function handleSwitch(post) {
     try {
-      const { id, title, content, thumbnail, isPublished } = post;
+      const { id, title, content, isPublished } = post;
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -77,7 +75,6 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
           body: JSON.stringify({
             title,
             content,
-            imageUrl: thumbnail,
             isPublished: isPublished ? "false" : "true",
           }),
         },
