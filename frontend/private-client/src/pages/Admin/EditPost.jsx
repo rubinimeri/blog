@@ -88,10 +88,6 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
         setMessages(data);
       } catch (err) {
         console.log(err);
-        toast({
-          title: "Error fetching comments!",
-          description: err.message,
-        });
       } finally {
         setLoading(false);
       }
@@ -214,7 +210,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
         <FormField
           control={form.control}
           name="file"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>Thumbnail</FormLabel>
               <div className="flex items-center">

@@ -2,7 +2,6 @@ import prisma from '../prisma/prismaClient.js';
 import asyncHandler from 'express-async-handler';
 import CustomError from "../utils/customError.js";
 import cloudinary from '../utils/cloudinaryConfig.js';
-import upload from '../middleware/multerConfig.js';
 
 const postsGet =  asyncHandler(async (req, res) => {
     const {

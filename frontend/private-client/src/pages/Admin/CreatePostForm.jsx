@@ -132,7 +132,7 @@ function CreatePostForm({ setPosts, switchTab }) {
         <FormField
           control={form.control}
           name="file"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>Thumbnail</FormLabel>
               <FormControl>
