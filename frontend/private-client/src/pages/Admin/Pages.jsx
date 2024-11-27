@@ -6,10 +6,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination.jsx";
+import PropTypes from "prop-types";
 
-function Pages({ metadata }) {
-  const { currentPage, totalPages } = metadata;
-
+function Pages({ currentPage, totalPages }) {
   const nextPageUrl =
     currentPage + 1 <= totalPages
       ? `/admin/${currentPage + 1}`
@@ -46,5 +45,10 @@ function Pages({ metadata }) {
     </Pagination>
   );
 }
+
+Pages.propTypes = {
+  currentPage: PropTypes.number,
+  totalPages: PropTypes.number,
+};
 
 export default Pages;

@@ -6,6 +6,7 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar.jsx";
 import { Button } from "@/components/ui/button.jsx";
+import PropTypes from "prop-types";
 
 function Comment({
   id,
@@ -45,5 +46,15 @@ function Comment({
     </div>
   );
 }
+
+Comment.propTypes = {
+  id: PropTypes.string,
+  username: PropTypes.string,
+  content: PropTypes.string,
+  createdAt: PropTypes.string,
+  likes: PropTypes.number,
+  avatarUrl: PropTypes.string,
+  handleDelete: PropTypes.func,
+};
 
 export default Comment;

@@ -1,4 +1,5 @@
 import { Editor } from "@tinymce/tinymce-react";
+import PropTypes from "prop-types";
 
 function TinyEditor({ value, onChange }) {
   return (
@@ -74,5 +75,10 @@ function TinyEditor({ value, onChange }) {
     />
   );
 }
+
+TinyEditor.propTypes = {
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};
 
 export default TinyEditor;

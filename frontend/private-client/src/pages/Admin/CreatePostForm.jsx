@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import PropTypes from "prop-types";
 
 const formSchema = z.object({
   title: z
@@ -171,5 +172,10 @@ function CreatePostForm({ setPosts, switchTab }) {
     </Form>
   );
 }
+
+CreatePostForm.propTypes = {
+  setPosts: PropTypes.func,
+  switchTab: PropTypes.func,
+};
 
 export default CreatePostForm;

@@ -13,6 +13,7 @@ import { Loader2, SquarePen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
 import { useToast } from "@/hooks/use-toast.js";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
   const { toast } = useToast();
@@ -176,5 +177,13 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
     </Table>
   );
 }
+
+PostsTable.propTypes = {
+  posts: PropTypes.array,
+  setPosts: PropTypes.func,
+  author: PropTypes.string,
+  setSelectedPost: PropTypes.func,
+  switchTab: PropTypes.func,
+};
 
 export default PostsTable;

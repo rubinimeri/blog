@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.jsx";
+import PropTypes from "prop-types";
 
 function Sort({ setSortValue, setOrder }) {
   return (
@@ -31,5 +32,10 @@ function Sort({ setSortValue, setOrder }) {
     </div>
   );
 }
+
+Sort.propTypes = {
+  setSortValue: PropTypes.func,
+  setOrder: PropTypes.func,
+};
 
 export default Sort;

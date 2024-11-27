@@ -32,6 +32,7 @@ import {
   AlertDialogFooter,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import PropTypes from "prop-types";
 
 const formSchema = z.object({
   title: z
@@ -304,5 +305,12 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
     </Form>
   );
 }
+
+EditPost.propTypes = {
+  post: PropTypes.object,
+  setPosts: PropTypes.func,
+  setActiveTab: PropTypes.func,
+  setSelectedPost: PropTypes.func,
+};
 
 export default EditPost;
