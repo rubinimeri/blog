@@ -10,14 +10,7 @@ const usersGet = asyncHandler(async (req, res) => {
 const userGet = asyncHandler(async (req, res) => {
     const { user } = req;
     const checkUser = await prisma.user.findUnique({
-        where: { id: user.id } ,
-        include: {
-            posts: {
-                include: {
-                    messages: true,
-                },
-            },
-        },
+        where: { id: user.id }
     });
     if (!checkUser) {
         throw new CustomError(`User with ID ${user.id} not found`, 404);
