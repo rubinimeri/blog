@@ -9,7 +9,7 @@ app.use(cors())
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
-app.use('/posts', routes.messages);
+app.use('/posts', routes.comments);
 app.use('/posts', routes.posts);
 app.use('/users', routes.users);
 app.use('/auth', routes.auth);

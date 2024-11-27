@@ -2,7 +2,7 @@ import prisma from '../prisma/prismaClient.js'
 import asyncHandler from "express-async-handler";
 import CustomError from "../utils/customError.js";
 
-const messagesGet = asyncHandler(async (req, res) => {
+const commentsGet = asyncHandler(async (req, res) => {
     const { postId } = req.params;
     const { sortValue } = req.query;
 
@@ -13,25 +13,25 @@ const messagesGet = asyncHandler(async (req, res) => {
     }
 
     if (sortValue === "asc" || sortValue === "desc") {
-        const messages = await prisma.message.findMany({
+        const comments = await prisma.comment.findMany({
             where: { postId },
             orderBy: {
                 createdAt: sortValue
             }
         })
-        return res.status(200).json(messages);
+        return res.status(200).json(comments);
     }
 
-    const messages = await prisma.message.findMany({
+    const comments = await prisma.comment.findMany({
         where: { postId },
         orderBy: {
             likes: "desc"
         }
     })
-    return res.status(200).json(messages);
+    return res.status(200).json(comments);
 })
 
-const messageCreatePost =  asyncHandler(async (req, res) => {
+const commentCreatePost =  asyncHandler(async (req, res) => {
     const { postId } = req.params;
     const { username, content, avatarUrl } = req.body;
     if (!username || !content) {
@@ -40,7 +40,7 @@ const messageCreatePost =  asyncHandler(async (req, res) => {
     if (!avatarUrl) {
         throw new CustomError("Avatar URL is required", 400);
     }
-    const message = await prisma.message.create({
+    const comment = await prisma.comment.create({
         data: {
             username,
             content,
@@ -48,19 +48,19 @@ const messageCreatePost =  asyncHandler(async (req, res) => {
             postId
         }
     })
-    return res.status(200).json(message);
+    return res.status(200).json(comment);
 })
 
-const messageLikePut =  asyncHandler(async (req, res) => {
-    const { postId, messageId } = req.params;
+const commentLikePut =  asyncHandler(async (req, res) => {
+    const { postId, commentId } = req.params;
     const { liked } = req.body;
 
-    const findMessage = await prisma.message.findUnique({
-        where: { postId, id: messageId },
+    const findMessage = await prisma.comment.findUnique({
+        where: { postId, id: commentId },
     })
 
-    const newMessage = await prisma.message.update({
-        where: { postId, id: messageId },
+    const newMessage = await prisma.comment.update({
+        where: { postId, id: commentId },
         data: {
             likes: liked === "true" ? findMessage.likes + 1 : findMessage.likes - 1
         }
@@ -68,17 +68,17 @@ const messageLikePut =  asyncHandler(async (req, res) => {
     return res.status(200).json(newMessage);
 })
 
-const messageDelete =  asyncHandler(async (req, res) => {
-    const { messageId } = req.params;
-    const message = await prisma.message.delete({
-        where: { id: messageId }
+const commentDelete =  asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+    const comment = await prisma.comment.delete({
+        where: { id: commentId }
     })
-    return res.status(200).json(message);
+    return res.status(200).json(comment);
 })
 
 export default {
-    messagesGet,
-    messageCreatePost,
-    messageLikePut,
-    messageDelete
+    commentsGet,
+    commentCreatePost,
+    commentLikePut,
+    commentDelete
 }
