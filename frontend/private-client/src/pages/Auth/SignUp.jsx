@@ -21,6 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card.jsx";
 import { useNavigate } from "react-router-dom";
+import { signUp } from "@/api/auth.js";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -36,24 +37,7 @@ function SignUp() {
 
   async function onSubmit(values) {
     try {
-      const { username, email, password, confirmPassword } = values;
-
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/sign-up`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            password,
-            confirmPassword,
-          }),
-        },
-      );
-      const jwt = await response.json();
+      const jwt = await signUp(values);
       localStorage.setItem("token", jwt.token);
       navigate("/admin/1");
     } catch (error) {

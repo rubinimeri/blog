@@ -20,6 +20,7 @@ import {
   CardTitle,
 } from "@/components/ui/card.jsx";
 import { useState } from "react";
+import { login } from "@/api/auth.js";
 
 function Login() {
   const [error, setError] = useState(null);
@@ -36,28 +37,8 @@ function Login() {
   async function onSubmit(values) {
     try {
       setLoading(true);
-      const { email, password } = values;
-
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Username or password is incorrect");
-      }
-
-      const jwt = await response.json();
-      localStorage.setItem("token", jwt.token);
+      const jwt = await login(values);
+      localStorage.setItem("token", jwt);
       window.location.assign("/admin/1");
     } catch (error) {
       console.error(error);
