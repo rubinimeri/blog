@@ -2,9 +2,9 @@ import PostList from "@/components/PostList.jsx";
 import usePosts from "@/hooks/usePosts.js";
 import { Link } from "react-router-dom";
 import { load } from "cheerio";
-import decodeHTMLEntities from "@/utils/decodeContent.js";
 import convertTimestamp from "@/utils/convertTimestamp.js";
 import { Loader2 } from "lucide-react";
+import PropTypes from "prop-types";
 
 export default function Hero() {
   const { loading, error, posts } = usePosts();
@@ -88,3 +88,7 @@ function LatestPosts({ children }) {
     </section>
   );
 }
+
+LatestPosts.propTypes = {
+  children: PropTypes.node,
+};
