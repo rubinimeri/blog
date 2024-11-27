@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { loginSchema } from "@/utils/zodSchemas.js";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input.jsx";
@@ -20,11 +20,6 @@ import {
   CardTitle,
 } from "@/components/ui/card.jsx";
 import { useState } from "react";
-
-const loginSchema = z.object({
-  email: z.string().max(255).email("Invalid email address"),
-  password: z.string().min(5, "Password must be at least 5 characters"),
-});
 
 function Login() {
   const [error, setError] = useState(null);

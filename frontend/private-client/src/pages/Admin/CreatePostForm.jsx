@@ -4,9 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast.js";
 import { Loader2 } from "lucide-react";
-import * as z from "zod";
-import sanitizeField from "@/utils/sanitize.js";
-
+import { postSchema } from "@/utils/zodSchemas.js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,34 +19,12 @@ import {
 } from "@/components/ui/form";
 import PropTypes from "prop-types";
 
-const formSchema = z.object({
-  title: z
-    .string()
-    .min(2, "Title must be at least 2 characters")
-    .transform(sanitizeField),
-  content: z
-    .string()
-    .min(2, "Content must be at least 10 characters")
-    .transform(sanitizeField),
-  file: z
-    .instanceof(FileList)
-    .refine((files) => files.length > 0, {
-      message: "At least one file is required",
-    })
-    .refine(
-      (files) =>
-        Array.from(files).every((file) => file.size <= 5 * 1024 * 1024),
-      { message: "Each file must not exceed 5MB" },
-    ),
-  isPublished: z.boolean().optional(),
-});
-
 function CreatePostForm({ setPosts, switchTab }) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(postSchema),
     defaultValues: {
       title: "",
       content: "",

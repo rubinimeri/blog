@@ -1,9 +1,8 @@
-import * as z from "zod";
 import CommentList from "@/pages/Admin/CommentList.jsx";
 import ThumbnailPreview from "@/pages/Admin/ThumbnailPreview.jsx";
 import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
-import sanitizeField from "@/utils/sanitize.js";
 import fileToBase64 from "@/utils/fileToBase64.js";
+import { postSchema } from "@/utils/zodSchemas.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,29 +21,6 @@ import {
   FormMessage,
 } from "@/components/ui/form.jsx";
 import PropTypes from "prop-types";
-
-const formSchema = z.object({
-  title: z
-    .string()
-    .min(2, "Title must be at least 2 characters")
-    .transform(sanitizeField),
-  content: z
-    .string()
-    .min(2, "Content must be at least 10 characters")
-    .transform(sanitizeField),
-  file: z
-    .instanceof(FileList)
-    .refine((files) => files.length > 0, {
-      message: "At least one file is required",
-    })
-    .refine(
-      (files) =>
-        Array.from(files).every((file) => file.size <= 5 * 1024 * 1024),
-      { message: "Each file must not exceed 5MB" },
-    )
-    .optional(),
-  isPublished: z.boolean().optional(),
-});
 
 const decodeHTMLEntities = (html) => {
   const parser = new DOMParser();
@@ -86,7 +62,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
   }, [post]);
 
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(postSchema),
     defaultValues: {
       title: post.title,
       content: decodeHTMLEntities(post.content),

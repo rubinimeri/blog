@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { signUpSchema } from "@/utils/zodSchemas.js";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input.jsx";
@@ -21,22 +21,6 @@ import {
   CardTitle,
 } from "@/components/ui/card.jsx";
 import { useNavigate } from "react-router-dom";
-
-const signUpSchema = z
-  .object({
-    username: z.string().min(2, "Username must be at least 2 characters"),
-    email: z
-      .string()
-      .min(2, "Email must be at least")
-      .max(255)
-      .email("Invalid email address"),
-    password: z.string().min(5, "Password must be at least 5 characters"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords must match",
-    path: ["confirmPassword"],
-  });
 
 function SignUp() {
   const navigate = useNavigate();
