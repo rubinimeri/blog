@@ -19,11 +19,11 @@ function Comment({
 
   const handleLike = async () => {
     if (isLiked) {
-      await handleLikeUnlikeComment(id, "unlike");
       setIsLiked(false);
+      await handleLikeUnlikeComment(id, "unlike");
     } else {
-      await handleLikeUnlikeComment(id);
       setIsLiked(true);
+      await handleLikeUnlikeComment(id);
     }
   };
 
