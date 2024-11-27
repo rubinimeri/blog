@@ -1,6 +1,9 @@
 import * as z from "zod";
-import sanitizeField from "@/utils/sanitize.js";
+import CommentList from "@/pages/Admin/CommentList.jsx";
+import ThumbnailPreview from "@/pages/Admin/ThumbnailPreview.jsx";
 import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
+import sanitizeField from "@/utils/sanitize.js";
+import fileToBase64 from "@/utils/fileToBase64.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,15 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form.jsx";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import PropTypes from "prop-types";
-import CommentList from "@/pages/Admin/CommentList.jsx";
 
 const formSchema = z.object({
   title: z
@@ -60,6 +55,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState([]);
+  const [thumbnailUrl, setThumbnailUrl] = useState(post.imageUrl);
 
   useEffect(() => {
     const getComments = async () => {
@@ -208,30 +204,17 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
             <FormItem>
               <FormLabel>Thumbnail</FormLabel>
               <div className="flex items-center">
-                <AlertDialog>
-                  <AlertDialogTrigger>
-                    <div className="flex aspect-video h-9">
-                      <img
-                        src={post.imageUrl}
-                        alt="image"
-                        width={50}
-                        className="rounded-sm"
-                      />
-                    </div>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <div className="flex">
-                      <img src={post.imageUrl} alt="file preview" />
-                    </div>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Close</AlertDialogCancel>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                <ThumbnailPreview imageUrl={thumbnailUrl} />
                 <FormControl>
                   <Input
                     type="file"
-                    onChange={(e) => form.setValue("file", e.target.files)}
+                    onChange={async (e) => {
+                      const files = e.target.files;
+                      form.setValue("file", files);
+
+                      const imageUrl = await fileToBase64(files[0]);
+                      setThumbnailUrl(imageUrl);
+                    }}
                   />
                 </FormControl>
               </div>
