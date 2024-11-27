@@ -1,3 +1,16 @@
+import * as z from "zod";
+import Comment from "@/pages/Admin/Comment.jsx";
+import sanitizeField from "@/utils/sanitize.js";
+import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
+import fileToBase64 from "@/utils/fileToBase64.js";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/hooks/use-toast.js";
+import { Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input.jsx";
+import { Checkbox } from "@/components/ui/checkbox.jsx";
+import { Button } from "@/components/ui/button.jsx";
 import {
   Form,
   FormControl,
@@ -20,20 +33,6 @@ import {
   AlertDialogFooter,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input.jsx";
-import { Editor } from "@tinymce/tinymce-react";
-import fileToBase64 from "@/utils/fileToBase64.js";
-import { Checkbox } from "@/components/ui/checkbox.jsx";
-import { Button } from "@/components/ui/button.jsx";
-import * as z from "zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Comment from "@/pages/Admin/Comment.jsx";
-import { useToast } from "@/hooks/use-toast.js";
-import { Loader2 } from "lucide-react";
-import sanitizeField from "@/utils/sanitize.js";
-import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
 
 const formSchema = z.object({
   title: z
@@ -44,7 +43,17 @@ const formSchema = z.object({
     .string()
     .min(2, "Content must be at least 10 characters")
     .transform(sanitizeField),
-  thumbnail: z.string(),
+  file: z
+    .instanceof(FileList)
+    .refine((files) => files.length > 0, {
+      message: "At least one file is required",
+    })
+    .refine(
+      (files) =>
+        Array.from(files).every((file) => file.size <= 5 * 1024 * 1024),
+      { message: "Each file must not exceed 5MB" },
+    )
+    .optional(),
   isPublished: z.boolean().optional(),
 });
 
@@ -95,7 +104,6 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
     defaultValues: {
       title: post.title,
       content: decodeHTMLEntities(post.content),
-      thumbnail: post.imageUrl,
       isPublished: post.isPublished,
     },
   });
@@ -103,8 +111,18 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
   async function onSubmit(values) {
     try {
       setLoading(true);
-      const { title, content, thumbnail, isPublished } = values;
+      const { title, content, file, isPublished } = values;
       const token = localStorage.getItem("token");
+
+      const formData = new FormData();
+
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("isPublished", isPublished ? "true" : "false");
+
+      if (file) {
+        formData.append("file", file[0]);
+      }
 
       const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/posts/${post.id}`,
@@ -112,14 +130,8 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
           method: "PUT",
           headers: {
             Authorization: `bearer ${token}`,
-            "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            title,
-            content,
-            imageUrl: thumbnail,
-            isPublished: isPublished ? "true" : "false",
-          }),
+          body: formData,
         },
       );
 
@@ -201,7 +213,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
         />
         <FormField
           control={form.control}
-          name="thumbnail"
+          name="file"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Thumbnail</FormLabel>
@@ -210,8 +222,8 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
                   <AlertDialogTrigger>
                     <div className="flex aspect-video h-9">
                       <img
-                        src={field.value}
-                        alt="thumbnail"
+                        src={post.imageUrl}
+                        alt="image"
                         width={50}
                         className="rounded-sm"
                       />
@@ -219,7 +231,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <div className="flex">
-                      <img src={field.value} alt="thumbnail preview" />
+                      <img src={post.imageUrl} alt="file preview" />
                     </div>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Close</AlertDialogCancel>
@@ -229,10 +241,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
                 <FormControl>
                   <Input
                     type="file"
-                    onChange={async (e) => {
-                      const file = await fileToBase64(e.target.files?.[0]); // Get the selected file
-                      field.onChange(file); // Manually update React Hook Form
-                    }}
+                    onChange={(e) => form.setValue("file", e.target.files)}
                   />
                 </FormControl>
               </div>
