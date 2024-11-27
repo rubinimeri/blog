@@ -38,7 +38,7 @@ async function editPost({ id, title, content, file, isPublished }) {
 
   formData.append("title", title);
   formData.append("content", content);
-  formData.append("isPublished", isPublished ? "false" : "true");
+  formData.append("isPublished", isPublished ? "true" : "false");
 
   if (file) {
     formData.append("file", file[0]);

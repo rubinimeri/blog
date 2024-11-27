@@ -49,7 +49,7 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
 
   async function handleSwitch(post) {
     try {
-      const data = await editPost(post);
+      const data = await editPost({ ...post, isPublished: !post.isPublished });
       const postIndex = posts.findIndex((post) => post.id === data.id);
       const postCopy = [...posts];
 

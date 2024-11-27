@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form.jsx";
 import PropTypes from "prop-types";
+import { editPost } from "@/api/posts.js";
 
 const decodeHTMLEntities = (html) => {
   const parser = new DOMParser();
@@ -73,31 +74,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
   async function onSubmit(values) {
     try {
       setLoading(true);
-      const { title, content, file, isPublished } = values;
-      const token = localStorage.getItem("token");
-
-      const formData = new FormData();
-
-      formData.append("title", title);
-      formData.append("content", content);
-      formData.append("isPublished", isPublished ? "true" : "false");
-
-      if (file) {
-        formData.append("file", file[0]);
-      }
-
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/posts/${post.id}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `bearer ${token}`,
-          },
-          body: formData,
-        },
-      );
-
-      const data = await response.json();
+      const data = await editPost({ id: post.id, ...values });
       setPosts((posts) => [data, ...posts.filter((p) => p.id !== data.id)]);
 
       toast({
