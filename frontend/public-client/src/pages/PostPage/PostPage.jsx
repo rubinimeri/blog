@@ -14,7 +14,7 @@ function PostPage() {
   const { error, loading, post, setPost } = usePost(postId);
 
   function handleAddComment(username, content) {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages`, {
+    fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,12 +26,12 @@ function PostPage() {
       }),
     })
       .then((res) => res.json())
-      .then((data) => setPost({ ...post, messages: [...post.messages, data] }));
+      .then((data) => setPost({ ...post, comments: [...post.comments, data] }));
   }
 
-  function handleLikeUnlikeComment(messageId, liked = "true") {
+  function handleLikeUnlikeComment(commentId, liked = "true") {
     fetch(
-      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages/${messageId}`,
+      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments/${commentId}`,
       {
         method: "PUT",
         headers: {
@@ -44,25 +44,25 @@ function PostPage() {
     )
       .then((res) => res.json())
       .then((data) => {
-        const commentIndex = post.messages.findIndex(
-          (message) => message.id === messageId,
+        const commentIndex = post.comments.findIndex(
+          (comment) => comment.id === commentId,
         );
-        const messagesDuplicate = [...post.messages];
-        messagesDuplicate[commentIndex] = data;
-        setPost({ ...post, messages: messagesDuplicate });
+        const commentsDuplicate = [...post.comments];
+        commentsDuplicate[commentIndex] = data;
+        setPost({ ...post, comments: commentsDuplicate });
       });
   }
 
   function handleSortComments(sortValue = "asc") {
     const queryParams = new URLSearchParams({ sortValue }).toString();
     fetch(
-      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages?${queryParams}`,
+      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments?${queryParams}`,
       {
         method: "GET",
       },
     )
       .then((res) => res.json())
-      .then((data) => setPost({ ...post, messages: data }));
+      .then((data) => setPost({ ...post, comments: data }));
   }
 
   if (loading)
@@ -108,7 +108,7 @@ function PostPage() {
             <AddComment handleAddComment={handleAddComment} />
           </div>
         </div>
-        {post.messages.map((comment) => (
+        {post.comments.map((comment) => (
           <Comment
             key={comment.id}
             {...comment}

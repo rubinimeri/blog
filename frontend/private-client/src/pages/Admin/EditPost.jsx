@@ -65,16 +65,16 @@ const decodeHTMLEntities = (html) => {
 function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
-    const getMessages = async () => {
+    const getComments = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/posts/${post.id}/messages?sortValue=asc`,
+          `${import.meta.env.VITE_BASE_URL}/posts/${post.id}/comments?sortValue=asc`,
           {
             method: "GET",
             headers: {
@@ -85,14 +85,14 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
         );
 
         const data = await response.json();
-        setMessages(data);
+        setComments(data);
       } catch (err) {
         console.log(err);
       } finally {
         setLoading(false);
       }
     };
-    getMessages();
+    getComments();
   }, [post]);
 
   const form = useForm({
@@ -156,7 +156,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/posts/${post.id}/messages/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/posts/${post.id}/comments/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -167,10 +167,10 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
 
       const data = await response.json();
 
-      setMessages(messages.filter((message) => message.id !== data.id));
+      setComments(comments.filter((comment) => comment.id !== data.id));
 
       toast({
-        title: "Message successfully deleted!",
+        title: "Comment successfully deleted!",
         description: `Username: ${data.username}`,
       });
     } catch (err) {
@@ -265,15 +265,15 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
             </FormItem>
           )}
         />
-        {messages && (
+        {comments && (
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>Comments</AccordionTrigger>
               <AccordionContent>
-                {messages.map((message) => (
+                {comments.map((comment) => (
                   <Comment
-                    key={message.id}
-                    {...message}
+                    key={comment.id}
+                    {...comment}
                     handleDelete={handleDeleteComment}
                   />
                 ))}

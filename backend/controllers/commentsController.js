@@ -55,17 +55,17 @@ const commentLikePut =  asyncHandler(async (req, res) => {
     const { postId, commentId } = req.params;
     const { liked } = req.body;
 
-    const findMessage = await prisma.comment.findUnique({
+    const findComment = await prisma.comment.findUnique({
         where: { postId, id: commentId },
     })
 
-    const newMessage = await prisma.comment.update({
+    const newComment = await prisma.comment.update({
         where: { postId, id: commentId },
         data: {
-            likes: liked === "true" ? findMessage.likes + 1 : findMessage.likes - 1
+            likes: liked === "true" ? findComment.likes + 1 : findComment.likes - 1
         }
     })
-    return res.status(200).json(newMessage);
+    return res.status(200).json(newComment);
 })
 
 const commentDelete =  asyncHandler(async (req, res) => {

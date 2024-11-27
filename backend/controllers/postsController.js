@@ -11,7 +11,7 @@ const postsGet =  asyncHandler(async (req, res) => {
     } = req.query;
 
     const { user } = req;
-    const validSortFields = ['createdAt', 'title', 'messages'];
+    const validSortFields = ['createdAt', 'title', 'comments'];
     const validOrderValues = ['asc', 'desc'];
 
     if (!validSortFields.includes(sort)) {
@@ -34,7 +34,7 @@ const postsGet =  asyncHandler(async (req, res) => {
     }
 
     let orderBy;
-    if (sort === 'messages') {
+    if (sort === 'comments') {
         orderBy = { [sort]: { _count: order } };
     } else {
         orderBy = { [sort]: order };
@@ -49,7 +49,7 @@ const postsGet =  asyncHandler(async (req, res) => {
                     username: true,
                 }
             },
-            ...(user && { messages: true })
+            ...(user && { comments: true })
         }
     });
     return res.status(200).json(posts);
@@ -65,7 +65,7 @@ const postGet =  asyncHandler(async (req, res) => {
                     username: true,
                 },
             },
-            messages: true
+            comments: true
         }
     });
 

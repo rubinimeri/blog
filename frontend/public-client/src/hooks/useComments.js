@@ -6,7 +6,7 @@ const useComments = (postId) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/messages`, {
+    fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments`, {
       method: "GET",
     })
       .then((res) => res.json())

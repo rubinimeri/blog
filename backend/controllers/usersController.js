@@ -28,9 +28,9 @@ const userDelete = asyncHandler(async (req, res) => {
         throw new CustomError(`User with ID ${userId} not found`, 404);
     }
 
-    // Delete messages from posts
+    // Delete comments from posts
     for (const post of user.posts) {
-        await prisma.message.deleteMany({
+        await prisma.comment.deleteMany({
             where: { postId: post.id },
         })
     }
