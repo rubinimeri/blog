@@ -2,34 +2,12 @@ import Header from "@/components/Header.jsx";
 import Footer from "@/components/Footer.jsx";
 import Comment from "@/pages/PostPage/Comment.jsx";
 import AddComment from "@/pages/PostPage/AddComment.jsx";
+import SortComments from "./SortComments.jsx";
 import usePost from "@/hooks/usePost.js";
 import convertTimestamp from "@/utils/convertTimestamp.js";
 import { useParams } from "react-router-dom";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select.jsx";
 import styleHtmlContent from "@/utils/styleHtmlContent.js";
 import { Loader2 } from "lucide-react";
-
-function Sort({ handleSortComments }) {
-  return (
-    <Select onValueChange={handleSortComments}>
-      <SelectTrigger className="w-[150px] max-md:w-[100px]">
-        <SelectValue placeholder="Sort By" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="asc">Oldest</SelectItem>
-        <SelectItem value="desc">Newest</SelectItem>
-        <SelectItem value="likes">Likes</SelectItem>
-      </SelectContent>
-    </Select>
-  );
-}
 
 function PostPage() {
   const { postId } = useParams();
@@ -126,7 +104,7 @@ function PostPage() {
         <div className="flex justify-between items-center">
           <h2 className="font-bold text-xl">Comments</h2>
           <div className="flex items-center gap-2">
-            <Sort handleSortComments={handleSortComments} />
+            <SortComments handleSortComments={handleSortComments} />
             <AddComment handleAddComment={handleAddComment} />
           </div>
         </div>

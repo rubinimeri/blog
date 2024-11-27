@@ -1,5 +1,5 @@
 import Home from "@/pages/Home/Home.jsx";
-import AllPosts from "@/pages/AllPosts.jsx";
+import AllPosts from "@/pages/AllPosts/AllPosts.jsx";
 import PostPage from "@/pages/PostPage/PostPage.jsx";
 
 const routes = [
