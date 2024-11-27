@@ -13,7 +13,7 @@ postsRouter.get('/:postId', postsController.postGet);
 postsRouter.use(jwtAuthenticate)
 
 postsRouter.post('/', upload.single("file"), validatePost, postsController.postsCreatePost);
-postsRouter.put('/:postId', validatePost, postsController.postsUpdatePut);
+postsRouter.put('/:postId', upload.single("file"), validatePost, postsController.postsUpdatePut);
 postsRouter.delete('/:postId', postsController.postDelete);
 
 export default postsRouter;

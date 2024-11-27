@@ -115,16 +115,44 @@ const postsCreatePost = asyncHandler(async (req, res) => {
 const postsUpdatePut=  asyncHandler(async (req, res) => {
     const { postId } = req.params;
 
-    const { title, content, imageUrl, isPublished } = req.body;
+    const { title, content, isPublished } = req.body;
     if (!title || !content) {
         throw new CustomError("Title and content are required", 400);
     }
 
-    const post = await prisma.post.update({
-        data: { title, content, imageUrl, isPublished: isPublished === "true" },
-        where: { id: postId }
+    const { file } = req;
+    if (!file) {
+        const post = await prisma.post.update({
+            data: { title, content, isPublished: isPublished === "true" },
+            where: { id: postId }
+        })
+        return res.status(200).json(post);
+    }
+
+    await cloudinary.uploader.upload(file.path, async (err, result) => {
+        if (err) {
+            throw new CustomError(err.message, err.statusCode);
+        }
+
+        // Delete previous image
+        const previousPost = await prisma.post.findUnique({where: { id: postId }});
+        await cloudinary.uploader.destroy(previousPost.cloudinaryId);
+
+        const post = await prisma.post.update({
+            data: {
+                title,
+                content,
+                imageUrl: result.url,
+                cloudinaryId: result.public_id,
+                isPublished: Boolean(isPublished === "true"),
+            },
+            where: {
+                id: postId,
+            }
+        })
+
+        return res.status(200).json(post);
     })
-    return res.status(200).json(post);
 })
 
 const postDelete =  asyncHandler(async (req, res) => {
