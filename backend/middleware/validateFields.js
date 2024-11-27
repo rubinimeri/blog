@@ -63,7 +63,7 @@ const validatePost = [
     body("content")
         .trim()
         .isLength({ min: 2 }).withMessage(`Content ${minCharacters(2)}`)
-        .escape()
+        .custom((value, { req }) => DOMPurify.sanitize(value)),
 ]
 
 export  {
