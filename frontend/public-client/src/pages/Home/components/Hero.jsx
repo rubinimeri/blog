@@ -25,8 +25,7 @@ export default function Hero() {
   }
 
   const mainPost = posts[0];
-  const decodedContent = decodeHTMLEntities(mainPost.content);
-  const $ = load(decodedContent);
+  const $ = load(mainPost.content);
   const firstParagraph = $("p").first().text();
 
   return (

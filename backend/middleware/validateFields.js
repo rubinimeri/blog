@@ -63,7 +63,7 @@ const validatePost = [
     body("content")
         .trim()
         .isLength({ min: 2 }).withMessage(`Content ${minCharacters(2)}`)
-        .custom((value, { req }) => DOMPurify.sanitize(value)),
+        .custom((value, { req }) => DOMPurify.sanitize(value, { ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'li', 'ol'] })),
 ]
 
 export  {

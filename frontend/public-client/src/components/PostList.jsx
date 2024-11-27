@@ -2,12 +2,10 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import convertTimestamp from "@/utils/convertTimestamp.js";
 import { load } from "cheerio";
-import decodeHTMLEntities from "@/utils/decodeContent.js";
 
 function PostCard({ id, author, imageUrl, title, content, createdAt }) {
   // Get first paragraph from content using cheerio
-  const decodedContent = decodeHTMLEntities(content);
-  const $ = load(decodedContent);
+  const $ = load(content);
   const firstParagraph = $("p").first().text();
 
   return (

@@ -1,9 +1,7 @@
 import { load } from "cheerio";
-import decodeHTMLEntities from "@/utils/decodeContent.js";
 
 function styleHtmlContent(content) {
-  const decodedContent = decodeHTMLEntities(content);
-  const $ = load(decodedContent);
+  const $ = load(content);
 
   $("h2").each((i, element) => $(element).addClass("text-xl font-bold"));
   $("h3").each((i, element) => $(element).addClass("text-lg font-bold"));
