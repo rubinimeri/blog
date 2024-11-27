@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+import { getPosts } from "@/api/posts.js";
 
 const usePosts = (sortValue = "createdAt", order = "asc", search = "") => {
   const [posts, setPosts] = useState(null);
   const [postsLoading, setPostsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
 
   const queries = new URLSearchParams({
     sortValue,
@@ -13,16 +13,17 @@ const usePosts = (sortValue = "createdAt", order = "asc", search = "") => {
   }).toString();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts/all?${queries}`, {
-      method: "GET",
-      headers: {
-        Authorization: `bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setPosts(data))
-      .catch((error) => setError(error))
-      .finally(() => setPostsLoading(false));
+    const fetchPosts = async () => {
+      try {
+        const data = await getPosts(queries);
+        setPosts(data);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setPostsLoading(false);
+      }
+    };
+    fetchPosts();
   }, [queries]);
 
   return { postsLoading, error, posts, setPosts };

@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import PropTypes from "prop-types";
+import { createPost } from "@/api/posts.js";
 
 function CreatePostForm({ setPosts, switchTab }) {
   const [loading, setLoading] = useState(false);
@@ -35,29 +36,8 @@ function CreatePostForm({ setPosts, switchTab }) {
   async function onSubmit(values) {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
 
-      const formData = new FormData();
-
-      formData.append("title", values.title);
-      formData.append("content", values.content);
-      formData.append("file", values.file[0]);
-      formData.append("isPublished", values.isPublished ? "true" : "false");
-
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/posts`, {
-        method: "POST",
-        headers: {
-          Authorization: `bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create post");
-      }
-
-      const post = await response.json();
-      console.log(post);
+      const post = await createPost(values);
       setPosts((posts) => [post, ...posts]);
 
       toast({

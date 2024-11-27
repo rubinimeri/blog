@@ -103,7 +103,7 @@ const postsCreatePost = asyncHandler(async (req, res) => {
                 imageUrl: result.url,
                 authorId: user.id,
                 cloudinaryId: result.public_id,
-                isPublished: Boolean(isPublished === "true"),
+                isPublished: isPublished === "true",
             }
         })
 
@@ -143,7 +143,7 @@ const postsUpdatePut=  asyncHandler(async (req, res) => {
                 content,
                 imageUrl: result.url,
                 cloudinaryId: result.public_id,
-                isPublished: Boolean(isPublished === "true"),
+                isPublished: isPublished === "true",
             },
             where: {
                 id: postId,

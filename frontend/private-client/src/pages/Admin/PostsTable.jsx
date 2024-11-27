@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button.jsx";
 import { useToast } from "@/hooks/use-toast.js";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { deletePost, editPost } from "@/api/posts.js";
 
 function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
   const { toast } = useToast();
@@ -24,25 +25,11 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
     try {
       setLoading(true);
       const { id } = e.target;
+
       setPosts(posts.filter((post) => post.id !== id));
       setSelectedPostId(id);
-      const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/posts/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `bearer ${token}`,
-          },
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to delete post");
-      }
-
-      const data = await response.json();
+      const data = await deletePost(id);
 
       toast({
         title: "Successfully deleted post!",
@@ -62,29 +49,10 @@ function PostsTable({ posts, setPosts, author, setSelectedPost, switchTab }) {
 
   async function handleSwitch(post) {
     try {
-      const { id, title, content, isPublished } = post;
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/posts/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title,
-            content,
-            isPublished: isPublished ? "false" : "true",
-          }),
-        },
-      );
-
-      const data = await response.json();
-
+      const data = await editPost(post);
       const postIndex = posts.findIndex((post) => post.id === data.id);
       const postCopy = [...posts];
+
       postCopy[postIndex] = data;
       setPosts(postCopy);
 
