@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form.jsx";
 import PropTypes from "prop-types";
 import { editPost } from "@/api/posts.js";
+import { deleteComment, getComments } from "@/api/comments.js";
 
 const decodeHTMLEntities = (html) => {
   const parser = new DOMParser();
@@ -35,23 +36,10 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
   const [thumbnailUrl, setThumbnailUrl] = useState(post.imageUrl);
 
   useEffect(() => {
-    const getComments = async () => {
+    const fetchComments = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/posts/${post.id}/comments?sortValue=asc`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `bearer ${token}`,
-              "Content-type": "application/json",
-            },
-          },
-        );
-
-        const data = await response.json();
+        const data = await getComments(post.id);
         setComments(data);
       } catch (err) {
         console.log(err);
@@ -59,7 +47,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
         setLoading(false);
       }
     };
-    getComments();
+    fetchComments();
   }, [post]);
 
   const form = useForm({
@@ -96,20 +84,7 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
 
   async function handleDeleteComment(id) {
     try {
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/posts/${post.id}/comments/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `bearer ${token}`,
-          },
-        },
-      );
-
-      const data = await response.json();
-
+      const data = await deleteComment(post.id, id);
       setComments(comments.filter((comment) => comment.id !== data.id));
 
       toast({
