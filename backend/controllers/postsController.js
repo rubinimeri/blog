@@ -136,7 +136,7 @@ const postsUpdatePut=  asyncHandler(async (req, res) => {
 
         // Delete previous image
         const previousPost = await prisma.post.findUnique({where: { id: postId }});
-        await cloudinary.uploader.destroy(previousPost.cloudinaryId);
+        cloudinary.uploader.destroy(previousPost.cloudinaryId);
 
         const post = await prisma.post.update({
             data: {
@@ -161,6 +161,8 @@ const postDelete =  asyncHandler(async (req, res) => {
     const post = await prisma.post.delete({
         where: { id: postId }
     })
+    cloudinary.uploader.destroy(post.cloudinaryId);
+
     return res.status(200).json(post);
 })
 
