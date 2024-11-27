@@ -1,5 +1,4 @@
 import * as z from "zod";
-import Comment from "@/pages/Admin/Comment.jsx";
 import sanitizeField from "@/utils/sanitize.js";
 import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
 import { useEffect, useState } from "react";
@@ -20,12 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form.jsx";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
@@ -33,6 +26,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import PropTypes from "prop-types";
+import CommentList from "@/pages/Admin/CommentList.jsx";
 
 const formSchema = z.object({
   title: z
@@ -266,20 +260,10 @@ function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
           )}
         />
         {comments && (
-          <Accordion type="single" collapsible>
-            <AccordionItem value="item-1">
-              <AccordionTrigger>Comments</AccordionTrigger>
-              <AccordionContent>
-                {comments.map((comment) => (
-                  <Comment
-                    key={comment.id}
-                    {...comment}
-                    handleDelete={handleDeleteComment}
-                  />
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <CommentList
+            comments={comments}
+            handleDeleteComment={handleDeleteComment}
+          />
         )}
         <div className="flex items-center space-x-3">
           <Button type="submit" className="flex-1">
