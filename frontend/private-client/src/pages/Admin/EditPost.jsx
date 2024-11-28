@@ -3,7 +3,7 @@ import ThumbnailPreview from "@/pages/Admin/ThumbnailPreview.jsx";
 import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
 import fileToBase64 from "@/utils/fileToBase64.js";
 import { postSchema } from "@/utils/zodSchemas.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast.js";
@@ -22,39 +22,20 @@ import {
 } from "@/components/ui/form.jsx";
 import PropTypes from "prop-types";
 import { editPost } from "@/api/posts.js";
-import { deleteComment, getComments } from "@/api/comments.js";
-
-const decodeHTMLEntities = (html) => {
-  const parser = new DOMParser();
-  return parser.parseFromString(html, "text/html").body.textContent;
-};
+import { deleteComment } from "@/api/comments.js";
+import useComments from "@/hooks/useComments.js";
 
 function EditPost({ post, setPosts, setActiveTab, setSelectedPost }) {
-  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [comments, setComments] = useState([]);
+  const { comments, setComments } = useComments(post.id);
   const [thumbnailUrl, setThumbnailUrl] = useState(post.imageUrl);
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        setLoading(true);
-        const data = await getComments(post.id);
-        setComments(data);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchComments();
-  }, [post]);
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
       title: post.title,
-      content: decodeHTMLEntities(post.content),
+      content: post.content,
       isPublished: post.isPublished,
     },
   });
