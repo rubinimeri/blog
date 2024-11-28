@@ -1,5 +1,5 @@
-import CommentList from "@/pages/Admin/CommentList.jsx";
-import ThumbnailPreview from "@/pages/Admin/ThumbnailPreview.jsx";
+import CommentList from "@/pages/Admin/EditPost/CommentList.jsx";
+import ThumbnailPreview from "@/pages/Admin/EditPost/ThumbnailPreview.jsx";
 import TinyEditor from "@/pages/Admin/TinyEditor.jsx";
 import fileToBase64 from "@/utils/fileToBase64.js";
 import { postSchema } from "@/utils/zodSchemas.js";

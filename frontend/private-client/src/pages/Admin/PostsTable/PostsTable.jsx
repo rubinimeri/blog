@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table.jsx";
 import convertTimestamp from "@/utils/convertTimestamp.js";
 import { Switch } from "@/components/ui/switch.jsx";
 import { Loader2, SquarePen, Trash2 } from "lucide-react";
