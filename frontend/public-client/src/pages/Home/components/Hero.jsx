@@ -21,7 +21,13 @@ export default function Hero() {
   if (error) return <div>Error!</div>;
 
   if (posts.length === 0) {
-    return <h1>Nothing to see here</h1>;
+    return (
+      <main className="min-h-[80vh]">
+        <h1 className="text-center font-serif font-black p-10">
+          No posts yet...
+        </h1>
+      </main>
+    );
   }
 
   const mainPost = posts[0];
