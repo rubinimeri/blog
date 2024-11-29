@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.jsx";
-import EditPost from "@/pages/Admin/EditPost/EditPost.jsx";
 import { TabsContent } from "@/components/ui/tabs.jsx";
+import PropTypes from "prop-types";
 
 function EditPostTab({ selectedPost, children }) {
   return (
@@ -21,5 +21,10 @@ function EditPostTab({ selectedPost, children }) {
     </TabsContent>
   );
 }
+
+EditPostTab.propTypes = {
+  children: PropTypes.node,
+  selectedPost: PropTypes.object,
+};
 
 export default EditPostTab;
