@@ -74,7 +74,7 @@ This  is a full-stack blogging web application where users can manage blog posts
   - Non-users can add comments to posts.
  
 - **Private Client:** 
-  - Perform CRUD operations on posts, comments, and users.
+  - Perform CRUD operations on own posts & comments.
 
 ## Deployment 
  
