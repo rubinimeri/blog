@@ -21,35 +21,33 @@ function PostsTableTab({
   children,
 }) {
   return (
-    metadata !== undefined && (
-      <TabsContent value="posts">
-        <Card>
-          <CardHeader className="flex-row flex-wrap justify-between gap-2 items-start">
-            <div className="space-y-2">
-              <CardTitle>Posts</CardTitle>
-              <CardDescription>
-                All your published & un-published posts here.
-              </CardDescription>
+    <TabsContent value="posts">
+      <Card>
+        <CardHeader className="flex-row flex-wrap justify-between gap-2 items-start">
+          <div className="space-y-2">
+            <CardTitle>Posts</CardTitle>
+            <CardDescription>
+              All your published & un-published posts here.
+            </CardDescription>
+          </div>
+          <div className="flex gap-4 flex-wrap">
+            <Sort setSortValue={setSortValue} setOrder={setOrder} />
+            <div className="flex gap-2 min-w-200px">
+              <Input type="search" placeholder="Search" />
+              <Button
+                onClick={(e) => setSearch(e.target.previousSibling.value)}
+              >
+                Search
+              </Button>
             </div>
-            <div className="flex gap-4 flex-wrap">
-              <Sort setSortValue={setSortValue} setOrder={setOrder} />
-              <div className="flex gap-2 min-w-200px">
-                <Input type="search" placeholder="Search" />
-                <Button
-                  onClick={(e) => setSearch(e.target.previousSibling.value)}
-                >
-                  Search
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>{children}</CardContent>
-          <CardFooter>
-            <Pages metadata={metadata} />
-          </CardFooter>
-        </Card>
-      </TabsContent>
-    )
+          </div>
+        </CardHeader>
+        <CardContent>{children}</CardContent>
+        <CardFooter>
+          <Pages {...metadata} />
+        </CardFooter>
+      </Card>
+    </TabsContent>
   );
 }
 

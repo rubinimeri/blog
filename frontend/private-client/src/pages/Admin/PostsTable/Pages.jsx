@@ -19,13 +19,11 @@ function Pages({ currentPage, totalPages }) {
       ? `/admin/${currentPage - 1}`
       : `/admin/${currentPage}#`;
 
-  console.log(currentPage);
-
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious to={currentPage ? prevPageUrl : "#"} />
+          <PaginationPrevious to={prevPageUrl} />
         </PaginationItem>
         {Array.apply(null, Array(totalPages)).map((val, index) => (
           <PaginationItem key={index}>
@@ -41,7 +39,7 @@ function Pages({ currentPage, totalPages }) {
           </PaginationItem>
         ))}
         <PaginationItem>
-          <PaginationNext href={currentPage ? nextPageUrl : "#"} />
+          <PaginationNext to={nextPageUrl} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

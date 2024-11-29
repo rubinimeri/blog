@@ -32,12 +32,6 @@ function AllPosts() {
   const currentPage = Math.max(1, Number(pageNumber));
   const skip = (pageNumber - 1) * pageSize;
   const totalPages = Math.ceil(posts.length / pageSize);
-
-  const metadata = {
-    currentPage,
-    totalPages,
-  };
-
   const paginatedPosts = posts.slice(skip, skip + pageSize);
 
   return (
@@ -66,7 +60,7 @@ function AllPosts() {
         </div>
         <div className="flex flex-col justify-between min-h-screen">
           <PostList posts={paginatedPosts} />
-          <Pages metadata={metadata} />
+          <Pages currentPage={currentPage} totalPages={totalPages} />
         </div>
       </main>
       <Footer />
