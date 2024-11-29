@@ -5,9 +5,9 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast.js";
 import { Loader2 } from "lucide-react";
 import { postSchema } from "@/utils/zodSchemas.js";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button.jsx";
+import { Input } from "@/components/ui/input.jsx";
+import { Checkbox } from "@/components/ui/checkbox.jsx";
 import {
   Form,
   FormControl,
@@ -16,7 +16,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/components/ui/form.jsx";
 import PropTypes from "prop-types";
 import { createPost } from "@/api/posts.js";
 
