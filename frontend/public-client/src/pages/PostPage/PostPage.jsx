@@ -8,61 +8,52 @@ import convertTimestamp from "@/utils/convertTimestamp.js";
 import { useParams } from "react-router-dom";
 import styleHtmlContent from "@/utils/styleHtmlContent.js";
 import { Loader2 } from "lucide-react";
+import {
+  createComment,
+  getComments,
+  likeUnlikeComment,
+} from "@/api/comments.js";
 
 function PostPage() {
   const { postId } = useParams();
   const { error, loading, post, setPost } = usePost(postId);
 
-  function handleAddComment(username, content) {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        content,
-        avatarUrl: "https://github.com/shadcn.png",
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => setPost({ ...post, comments: [...post.comments, data] }));
+  async function handleAddComment(username, content) {
+    try {
+      const data = await createComment(postId, username, content);
+      setPost({ ...post, comments: [...post.comments, data] });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function handleLikeUnlikeComment(commentId, liked = "true") {
-    fetch(
-      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments/${commentId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          liked,
-        }),
-      },
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        const commentIndex = post.comments.findIndex(
-          (comment) => comment.id === commentId,
-        );
-        const commentsDuplicate = [...post.comments];
-        commentsDuplicate[commentIndex] = data;
-        setPost({ ...post, comments: commentsDuplicate });
-      });
+  async function handleLikeUnlikeComment(commentId, liked = "true") {
+    try {
+      const commentIndex = post.comments.findIndex(
+        (comment) => comment.id === commentId,
+      );
+      const commentsDuplicate = [...post.comments];
+      commentsDuplicate[commentIndex] = {
+        ...commentsDuplicate[commentIndex],
+        likes:
+          liked === "true"
+            ? commentsDuplicate[commentIndex].likes + 1
+            : commentsDuplicate[commentIndex].likes - 1,
+      };
+      setPost({ ...post, comments: commentsDuplicate });
+      await likeUnlikeComment(postId, commentId, liked);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function handleSortComments(sortValue = "asc") {
-    const queryParams = new URLSearchParams({ sortValue }).toString();
-    fetch(
-      `${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments?${queryParams}`,
-      {
-        method: "GET",
-      },
-    )
-      .then((res) => res.json())
-      .then((data) => setPost({ ...post, comments: data }));
+  async function handleSortComments(sortValue = "asc") {
+    try {
+      const data = await getComments(postId, sortValue);
+      setPost({ ...post, comments: data });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   if (loading)

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getComments } from "@/api/comments.js";
 
 const useComments = (postId) => {
   const [comments, setComments] = useState([]);
@@ -6,13 +7,17 @@ const useComments = (postId) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}/comments`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => setComments(data))
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
+    async function fetchComments() {
+      try {
+        setComments(await getComments(postId));
+      } catch (error) {
+        console.log(error);
+        setError("Error getting comments!");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchComments();
   }, [postId]);
 
   return { loading, error, comments };
