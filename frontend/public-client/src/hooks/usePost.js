@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getPost } from "@/api/posts.js";
 
 const usePost = (postId) => {
   const [post, setPost] = useState(null);
@@ -6,13 +7,17 @@ const usePost = (postId) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts/${postId}`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => setPost(data))
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
+    async function fetchPost() {
+      try {
+        setPost(await getPost(postId));
+      } catch (error) {
+        console.log(error);
+        setError("Error fetching post!");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPost();
   }, [postId]);
 
   return { loading, error, post, setPost };

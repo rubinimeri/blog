@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
+import { getPosts } from "@/api/posts.js";
 
 const usePosts = (sortValue = "createdAt", order = "asc", search = "") => {
   const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const queries = new URLSearchParams({
-    sortValue,
-    order,
-    search,
-  }).toString();
-
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/posts?${queries}`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => setPosts(data))
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
-  }, [queries]);
+    async function fetchPosts() {
+      try {
+        setPosts(await getPosts(sortValue, order, search));
+      } catch (error) {
+        console.log(error);
+        setError("Error getting posts!");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPosts();
+  }, [sortValue, order, search]);
 
   return { loading, error, posts };
 };

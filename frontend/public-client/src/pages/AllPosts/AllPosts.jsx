@@ -26,7 +26,12 @@ function AllPosts() {
       </div>
     );
 
-  if (error) return <div>Error!</div>;
+  if (error)
+    return (
+      <main className="min-h-[80vh] grid place-items-center">
+        <h1 className="text-center">{error}</h1>
+      </main>
+    );
 
   const pageSize = 6;
   const currentPage = Math.max(1, Number(pageNumber));

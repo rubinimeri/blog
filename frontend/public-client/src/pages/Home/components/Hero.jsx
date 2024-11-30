@@ -18,7 +18,12 @@ export default function Hero() {
       </div>
     );
 
-  if (error) return <div>Error!</div>;
+  if (error)
+    return (
+      <main className="min-h-[80vh] grid place-items-center">
+        <h1 className="text-center">{error}</h1>
+      </main>
+    );
 
   if (posts.length === 0) {
     return (
